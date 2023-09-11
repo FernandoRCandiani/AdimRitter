@@ -1,0 +1,20 @@
+.padding-menu-top {
+  padding-top: 110px !important;
+}
+
+.btn-outline-focus {
+  color: #00a49a !important;
+  text-decoration: none;
+}
+
+.btn-outline-focus:hover,
+.btn-outline-focus:focus,
+.btn-outline-focus:active {
+  color: #ffffff !important;
+  background-color: #00a49a !important;
+  box-shadow: 1px 1px 10px #666666;
+}
+
+.tamanho {
+  height: 37rem !important;
+}
