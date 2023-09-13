@@ -11,21 +11,20 @@ export function Rotas() {
   const location = useLocation();
 
   return (
-    <>
+    <main className="page">
       {location.pathname !== "/login" && (
         <>
           <MenuSuperior />
           <MenuLateral />
         </>
       )}
-      {/* <div className="col-10 padding-menu-top">
-        {location.pathname === "/empresa" && <Empresa />}
-      </div> */}
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/empresa" element={<Empresa />} />
-      </Routes>
-    </>
+      <section className={["page-content", location.pathaname === '/login' ? 'login' : ''].join(" ")}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/empresa" element={<Empresa />} />
+        </Routes>
+      </section>
+    </main>
   );
 }

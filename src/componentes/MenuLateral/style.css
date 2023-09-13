@@ -1,5 +1,19 @@
+@import "../../style/variables.css";
+
+.side-menu {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  padding-top: var(--menu-superior);
+  max-width: var(--menu-lateral);
+  width: 100%;
+  background: #fff;
+  z-index: 4;
+}
+
 .padding-menu-top {
-  padding-top: 110px !important;
+  padding-top: var(--menu-superior) !important;
 }
 
 .btn-outline-focus {

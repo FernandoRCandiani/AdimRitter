@@ -1,0 +1,19 @@
+@import "./variables.css";
+
+body {
+  background: #00a49a !important;
+}
+
+.page-content {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  padding: calc(var(--menu-superior) + 2rem) 2rem 2rem calc(var(--menu-lateral) + 2rem);
+}
+
+.page-content.login {
+  padding: 0;
+}

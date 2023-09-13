@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
+
 import { Rotas } from "./routes";
 
 function App() {

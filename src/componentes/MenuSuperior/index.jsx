@@ -1,9 +1,11 @@
+import './style.css'
+
 export function MenuSuperior() {
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary shadow z-0 position-absolute vw-100">
+    <nav className="navbar navbar-expand-lg bg-body-tertiary shadow head">
       <div className="container-fluid justify-content-between">
         <img
-          src="./EcoVille.png"
+          src="/EcoVille.png"
           alt="Logo"
           width="70"
           height="70"
@@ -11,7 +13,7 @@ export function MenuSuperior() {
 
         <a className="d-flex navbar-brand align-items-center" href="#">
           <img
-            src="./icon.png"
+            src="/icon.png"
             alt="Foto de perfil"
             width="70"
             height="70"
