@@ -23,6 +23,7 @@ export function Rotas() {
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/empresa" element={<Empresa />} />
+          <Route path="/usuario" element={<Usuario />} />
         </Routes>
       </section>
     </main>
