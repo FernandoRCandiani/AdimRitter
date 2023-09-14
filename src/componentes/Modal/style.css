@@ -1,0 +1,51 @@
+.rModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 6;
+}
+
+.rModal-content {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    background: #fff;
+    overflow: hidden;
+    outline: none;
+    max-width: 900px;
+    width: 100%;
+    position: relative;
+    max-height: 500px;
+}
+
+.rModal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid #ccc;
+}
+
+.rModal-header__title {
+    font-size: 16px;
+    color: #000;
+}
+
+.rModal-header__close button {
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+}
+
+.rModal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    height: 100%;
+    overflow: auto;
+}
