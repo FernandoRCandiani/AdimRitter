@@ -47,7 +47,7 @@ export function Empresa() {
                 <tbody>
                   <tr>
                     <th scope="col">Nome</th>
-                    <th scope="col">CNPJ</th>
+                    <th scope="col">Documento</th>
                     <th scope="col">E-mail</th>
                     <th scope="col">Contato</th>
                     <th scope="col">Status</th>
