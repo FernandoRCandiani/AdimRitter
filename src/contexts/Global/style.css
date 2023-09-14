@@ -7,10 +7,11 @@
   width: 100%;
   z-index: 1000;
   background: rgba(255, 255, 255, 0.6);
+  top: 0;
 }
 
 .loader-content {
-  border: 0.75rem solid #000;
+  border: 0.75rem solid #00a49a;
   width: 10rem;
   height: 10rem;
   border-radius: 50%;

@@ -1,5 +1,8 @@
 import { useState } from "react";
 
+import { ROLE } from "../../constants";
+import { useGlobal } from '../../contexts/Global';
+
 import './style.css';
 
 const INITIAL_STATE = {
@@ -8,6 +11,8 @@ const INITIAL_STATE = {
 };
 
 export function Login() {
+  const { handleLoader, handleMessage } = useGlobal();
+
   const [data, setData] = useState(INITIAL_STATE);
   const [whichForm, setWhichForm] = useState("login");
 
@@ -21,26 +26,57 @@ export function Login() {
   async function effectLogin(event) {
     event.preventDefault();
 
+    handleLoader(true);
+
     try {
+      // const response = await api.post<LoginResponse>('/auth/login', data);
+
+      // await sleep();
+
+      // if (response.data.user.role === ROLE.EMPLOYEES) {
+      //   handleLoader(false);
+      //   return handleMessage("Você não tem acesso", 'error');
+      // }
+
+      // setToken(response.data.token);
+
+      // await sleep(50);
+
+      // const user = await fetchProfile();
+      // setUser(user);
+
       return window.location.assign("/dashboard");
     } catch (error) {
+      const data = error?.response?.data;
+      return handleMessage(data.message, 'error');
     } finally {
+      handleLoader(false);
     }
   }
 
   async function forgotPassword(event) {
     event.preventDefault();
 
+    handleLoader(true);
+
     try {
-      changeForm("login");
+      // await api.post('/auth/forgot', { email: data.email });
+
+      handleLoader(false);
+
+      handleMessage('Redefinição de senha enviada com sucesso', 'success');
+
+      changeForm('login');
     } catch (error) {
+      const data = error?.response?.data;
+      return handleMessage(data.message, 'error');
     } finally {
+      handleLoader(false);
     }
   }
 
   function changeForm(form) {
     setWhichForm(form);
-
     setData(INITIAL_STATE);
   }
 
