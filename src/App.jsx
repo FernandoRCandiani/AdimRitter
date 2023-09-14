@@ -1,12 +1,15 @@
 import { BrowserRouter } from "react-router-dom";
 
+import { GlobalProvider } from "./contexts/Global";
 import { Rotas } from "./routes";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Rotas />
-    </BrowserRouter>
+    <GlobalProvider>
+      <BrowserRouter>
+        <Rotas />
+      </BrowserRouter>
+    </GlobalProvider>
   );
 }
 

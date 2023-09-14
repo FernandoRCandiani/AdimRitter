@@ -17,3 +17,15 @@ body {
 .page-content.login {
   padding: 0;
 }
+
+.toast-error {
+  background: #fcc !important;
+  color: #900 !important;
+  font-size: 16px;
+}
+
+.toast-success {
+  background: #b3ffb3 !important;
+  color: #004d00 !important;
+  font-size: 16px;
+}
