@@ -12,15 +12,15 @@ export function Rotas() {
 
   return (
     <main className="page">
-      {location.pathname !== "/login" && (
+      {location.pathname !== "/" && (
         <>
           <MenuSuperior />
           <MenuLateral />
         </>
       )}
-      <section className={["page-content", location.pathaname === '/login' ? 'login' : ''].join(" ")}>
+      <section className={["page-content", location.pathname === '/' ? 'login' : ''].join(" ")}>
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/empresa" element={<Empresa />} />
         </Routes>
