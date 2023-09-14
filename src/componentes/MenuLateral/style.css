@@ -22,8 +22,7 @@
 }
 
 .btn-outline-focus:hover,
-.btn-outline-focus:focus,
-.btn-outline-focus:active {
+.btn-outline-focus.active {
   color: #ffffff !important;
   background-color: #00a49a !important;
   box-shadow: 1px 1px 10px #666666;
