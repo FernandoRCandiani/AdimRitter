@@ -81,7 +81,7 @@ export function Empresa() {
         </div>
       </div>
 
-      <Modal isOpen onRequestClose={() => { }} title={"Empresa"}>
+      <Modal isOpen={false} onRequestClose={() => { }} title={"Empresa"}>
         <form>
 
           <div className="row mb-4 ">

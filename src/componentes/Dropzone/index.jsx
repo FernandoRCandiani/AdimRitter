@@ -23,7 +23,7 @@ const Dropzone = ({ onFileUploaded }) => {
    })
 
    return (
-      <div {...getRootProps()} className="dropzone">
+      <div {...getRootProps()} className="dropzone ">
          <input {...getInputProps()} accept="image/*" />
 
          {
