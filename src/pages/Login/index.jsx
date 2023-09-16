@@ -2,6 +2,10 @@ import { useState } from "react";
 
 import { ROLE } from "../../constants";
 import { useGlobal } from '../../contexts/Global';
+import { api } from '../../services/api';
+import { setToken, setUser } from '../../services/auth';
+import { fetchProfile } from '../../services/fetches';
+import { sleep } from '../../util'
 
 import './style.css';
 
@@ -29,21 +33,21 @@ export function Login() {
     handleLoader(true);
 
     try {
-      // const response = await api.post<LoginResponse>('/auth/login', data);
+      const response = await api.post('/auth/login', data);
 
-      // await sleep();
+      await sleep();
 
-      // if (response.data.user.role === ROLE.EMPLOYEES) {
-      //   handleLoader(false);
-      //   return handleMessage("Você não tem acesso", 'error');
-      // }
+      if (response.data.user.role === ROLE.EMPLOYEES) {
+        handleLoader(false);
+        return handleMessage("Você não tem acesso", 'error');
+      }
 
-      // setToken(response.data.token);
+      setToken(response.data.token);
 
-      // await sleep(50);
+      await sleep(50);
 
-      // const user = await fetchProfile();
-      // setUser(user);
+      const user = await fetchProfile();
+      setUser(user);
 
       return window.location.assign("/dashboard");
     } catch (error) {
@@ -60,7 +64,7 @@ export function Login() {
     handleLoader(true);
 
     try {
-      // await api.post('/auth/forgot', { email: data.email });
+      await api.post('/auth/forgot', { email: data.email });
 
       handleLoader(false);
 
