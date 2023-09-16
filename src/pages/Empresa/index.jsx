@@ -187,7 +187,7 @@ export function Empresa() {
               </div>
 
               <div className="col-2 mb-3">
-                <button type="submit" class="btn btn-primary w-100">
+                <button type="submit" className="btn btn-primary w-100">
                   Consultar
                 </button>
               </div>

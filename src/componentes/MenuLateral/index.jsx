@@ -25,6 +25,10 @@ export function MenuLateral() {
           <Link to="/recompensa" className={["btn-outline-focus", "p-2", location.pathname === '/recompensa' ? 'active' : ''].join(" ")}>
             Recompensa
           </Link>
+
+          <Link to="/missao" className={["btn-outline-focus", "p-2", location.pathname === '/missao' ? 'active' : ''].join(" ")}>
+            Missao
+          </Link>
         </div>
       </div>
     </aside>
