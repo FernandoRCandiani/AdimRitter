@@ -3,6 +3,7 @@ import { Login } from "../pages/Login";
 import { Dashboard } from "../pages/Dashboard";
 import { Empresa } from "../pages/Empresa";
 import { Usuario } from "../pages/Usuario";
+import { Recompensa } from "../pages/Recompensa";
 
 import { MenuSuperior } from "../componentes/MenuSuperior";
 import { MenuLateral } from "../componentes/MenuLateral";
@@ -18,11 +19,18 @@ export function Rotas() {
           <MenuLateral />
         </>
       )}
-      <section className={["page-content", location.pathname === '/' ? 'login' : ''].join(" ")}>
+      <section
+        className={[
+          "page-content",
+          location.pathname === "/" ? "login" : "",
+        ].join(" ")}
+      >
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/empresa" element={<Empresa />} />
+          <Route path="/usuario" element={<Usuario />} />
+          <Route path="/recompensa" element={<Recompensa />} />
         </Routes>
       </section>
     </main>

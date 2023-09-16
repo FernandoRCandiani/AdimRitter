@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 
+import { GlobalProvider } from "./contexts/Global";
 import { Rotas } from "./routes";
 import { fetchRefreshToken } from './services/fetches';
 
@@ -15,9 +16,11 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Rotas />
-    </BrowserRouter>
+    <GlobalProvider>
+      <BrowserRouter>
+        <Rotas />
+      </BrowserRouter>
+    </GlobalProvider>
   );
 }
 

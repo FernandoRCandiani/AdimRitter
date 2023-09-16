@@ -1,0 +1,70 @@
+.toggle {
+  display: flex;
+  flex-direction: row;
+  justify-content: normal;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+}
+.toggle[aria-disabled],
+.toggle[aria-disabled] * {
+  cursor: not-allowed;
+  user-select: none;
+}
+.toggle[aria-disabled] .toggle__case {
+  background: #edeff5 !important;
+}
+.toggle[aria-disabled] .toggle__case span {
+  background: #cbccd2;
+}
+.toggle[aria-disabled] .toggle__text {
+  color: #cbccd2;
+}
+.toggle.checked .toggle__case {
+  background: #00a49a;
+}
+.toggle.checked .toggle__case span {
+  transform: translateX(14px);
+}
+.toggle:not([aria-disabled]):hover .toggle__case {
+  background-color: #fff;
+  border-color: #9598a6;
+}
+.toggle:not([aria-disabled]):hover .toggle__case span {
+  background: #6b6d78;
+}
+.toggle__case {
+  display: flex;
+  flex-direction: row;
+  justify-content: normal;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  height: 1rem;
+  width: 1.75rem;
+  background-color: #cbccd2;
+  border-radius: 0.5rem;
+  transition: background-color 0.25s, border-color 0.25s;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0);
+}
+.toggle__case span {
+  background: #fff;
+  border-radius: 50%;
+  width: 0.75rem;
+  height: 0.75rem;
+  position: absolute;
+  transform: translateX(2px);
+  transition: transform 0.25s, background-color 0.25s;
+  will-change: transform;
+}
+.toggle__text {
+  color: #171717;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.3125rem;
+  text-decoration: none;
+  text-transform: capitalize;
+}
