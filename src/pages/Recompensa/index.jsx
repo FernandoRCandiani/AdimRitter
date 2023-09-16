@@ -114,7 +114,7 @@ export function Recompensa() {
             </div>
 
             <div className="row align-items-center justify-content-between">
-              <div className="col-3">200 recompesas cadastradas</div>
+              <div className="col-3">200 recompensas cadastradas</div>
               <div className="col-3 d-flex justify-content-end">
                 <Paginacao />
               </div>
@@ -123,6 +123,7 @@ export function Recompensa() {
         </div>
       </div>
 
+      {/* MODAL DE CADASTRO */}
       <Modal
         isOpen={false}
         onRequestClose={() => {}}
@@ -194,6 +195,39 @@ export function Recompensa() {
           <button type="submit" className="btn btn-primary">
             Criar
           </button>
+        </form>
+      </Modal>
+
+      {/* MODAL DE INFORMAÇÃO */}
+      <Modal isOpen={false} onRequestClose={() => {}} title={"Recompensa"}>
+        <form>
+          <div className="row mb-4 ">
+            <div className="col text-start">
+              <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
+                Nome: Reciclagem
+              </div>
+
+              <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
+                Tipo: Virtual
+              </div>
+
+              <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
+                Raridade: Comum
+              </div>
+
+              <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
+                Status: Ativo
+              </div>
+            </div>
+
+            <div className="col text-center d-flex justify-content-center align-items-center">
+              <img
+                src="/EcoVille.png"
+                className="h-auto w-50"
+                alt="Foto de usuario"
+              />
+            </div>
+          </div>
         </form>
       </Modal>
     </>
