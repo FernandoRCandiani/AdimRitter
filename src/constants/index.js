@@ -4,4 +4,5 @@ export const ROLE = {
   ADMIN: 'ADMIN',
   COMPANIES: 'COMPANIES',
   EMPLOYEES: 'EMPLOYEES',
-}
+};
+export const INITIAL_STALE_TIME = 1000 * 60 * 60; // 1h
