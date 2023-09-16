@@ -4,6 +4,7 @@ import { Dashboard } from "../pages/Dashboard";
 import { Empresa } from "../pages/Empresa";
 import { Usuario } from "../pages/Usuario";
 import { Recompensa } from "../pages/Recompensa";
+import { Missao } from "../pages/Missao";
 
 import { MenuSuperior } from "../componentes/MenuSuperior";
 import { MenuLateral } from "../componentes/MenuLateral";
@@ -31,6 +32,7 @@ export function Rotas() {
           <Route path="/empresa" element={<Empresa />} />
           <Route path="/usuario" element={<Usuario />} />
           <Route path="/recompensa" element={<Recompensa />} />
+          <Route path="/missao" element={<Missao />} />
         </Routes>
       </section>
     </main>
