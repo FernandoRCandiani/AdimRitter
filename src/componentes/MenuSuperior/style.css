@@ -4,3 +4,7 @@
   width: 100%;
   z-index: 5;
 }
+
+.head .profile-image {
+  object-fit: cover;
+}
