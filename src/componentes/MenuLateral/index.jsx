@@ -1,7 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
 
-import { Empresa } from "../../pages/Empresa";
-
 import "./style.css";
 
 export function MenuLateral() {
@@ -22,6 +20,10 @@ export function MenuLateral() {
 
           <Link to="/empresa" className={["btn-outline-focus", "p-2", location.pathname === '/empresa' ? 'active' : ''].join(" ")}>
             Empresas
+          </Link>
+          
+          <Link to="/recompensa" className={["btn-outline-focus", "p-2", location.pathname === '/recompensa' ? 'active' : ''].join(" ")}>
+            Recompensa
           </Link>
         </div>
       </div>

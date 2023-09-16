@@ -8,7 +8,7 @@ export function Modal(props) {
   return (
     <ReactModal overlayClassName='rModal' className='rModal-content' {...props}>
       <div className="rModal-header">
-        <div className="rModal-header__title">
+        <div className="rModal-header__title h4">
           {props.title}
         </div>
         <div className="rModal-header__close">
