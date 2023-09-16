@@ -1,10 +1,9 @@
 import axios from "axios";
 
-import { getToken, setToken } from './auth';
-import { fetchRefreshToken } from "./fetches";
+import { getToken, signout } from './auth';
 
 export const api = axios.create({
-  baseURL: ""
+  baseURL: import.meta.env.VITE_API
 });
 
 api.interceptors.request.use(request => {
@@ -22,14 +21,8 @@ api.interceptors.request.use(request => {
 api.interceptors.response.use(response => {
   return response;
 }, async error => {
-  const token = getToken();
-
-  if (error?.response?.status === 401 && token) {
-    const response = await fetchRefreshToken();
-
-    setToken(response.data);
-
-    return Promise.resolve();
+  if (error?.config?.url !== '/auth/login' && error?.response?.status === 401) {
+    return signout();
   }
 
   return Promise.reject(error);
