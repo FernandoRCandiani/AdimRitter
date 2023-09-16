@@ -7,7 +7,7 @@ export const isAuth = () => Cookies.get(COOKIE_TOKEN) !== undefined;
 export const getToken = () => Cookies.get(COOKIE_TOKEN);
 export const setToken = (token) => Cookies.set(COOKIE_TOKEN, token);
 
-export const getUser = () => JSON.parse(Cookies.get(COOKIE_USER))
+export const getUser = () => Cookies.get(COOKIE_USER) !== undefined && JSON.parse(Cookies.get(COOKIE_USER))
 export const setUser = (user) => Cookies.set(COOKIE_USER, JSON.stringify(user));
 
 export const signout = () => {
