@@ -49,22 +49,65 @@ export function Empresa() {
                       <th scope="col">Nome</th>
                       <th scope="col">Documento</th>
                       <th scope="col">E-mail</th>
-                      <th scope="col">Contato</th>
                       <th scope="col">Status</th>
                       <th scope="col">Infos</th>
                     </tr>
 
-                    <Tabela />
-                    <Tabela />
-                    <Tabela />
-                    <Tabela />
-                    <Tabela />
-                    <Tabela />
-                    <Tabela />
-                    <Tabela />
-                    <Tabela />
-                    <Tabela />
-                    <Tabela />
+                    <Tabela
+                      nome={"Coca cola"}
+                      doc={"001.039.241/0001-33"}
+                      email={"cocacola@cocacola.com.br"}
+                    />
+                    <Tabela
+                      nome={"Coca cola"}
+                      doc={"001.039.241/0001-33"}
+                      email={"cocacola@cocacola.com.br"}
+                    />
+                    <Tabela
+                      nome={"Coca cola"}
+                      doc={"001.039.241/0001-33"}
+                      email={"cocacola@cocacola.com.br"}
+                    />
+                    <Tabela
+                      nome={"Coca cola"}
+                      doc={"001.039.241/0001-33"}
+                      email={"cocacola@cocacola.com.br"}
+                    />
+                    <Tabela
+                      nome={"Coca cola"}
+                      doc={"001.039.241/0001-33"}
+                      email={"cocacola@cocacola.com.br"}
+                    />
+                    <Tabela
+                      nome={"Coca cola"}
+                      doc={"001.039.241/0001-33"}
+                      email={"cocacola@cocacola.com.br"}
+                    />
+                    <Tabela
+                      nome={"Coca cola"}
+                      doc={"001.039.241/0001-33"}
+                      email={"cocacola@cocacola.com.br"}
+                    />
+                    <Tabela
+                      nome={"Coca cola"}
+                      doc={"001.039.241/0001-33"}
+                      email={"cocacola@cocacola.com.br"}
+                    />
+                    <Tabela
+                      nome={"Coca cola"}
+                      doc={"001.039.241/0001-33"}
+                      email={"cocacola@cocacola.com.br"}
+                    />
+                    <Tabela
+                      nome={"Coca cola"}
+                      doc={"001.039.241/0001-33"}
+                      email={"cocacola@cocacola.com.br"}
+                    />
+                    <Tabela
+                      nome={"Coca cola"}
+                      doc={"001.039.241/0001-33"}
+                      email={"cocacola@cocacola.com.br"}
+                    />
                   </tbody>
                 </table>
               </div>
