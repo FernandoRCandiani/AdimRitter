@@ -263,7 +263,7 @@ export function Missao() {
       </Modal>
 
       {/* MODAL DE INFORMAÇÃO */}
-      <Modal isOpen={true} onRequestClose={() => {}} title={"Missão"}>
+      <Modal isOpen={false} onRequestClose={() => {}} title={"Missão"}>
         <form>
           <div className="row mb-4 ">
             <div className="h5 mb-2">Sobre missão</div>
