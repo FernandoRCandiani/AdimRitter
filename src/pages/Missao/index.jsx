@@ -14,6 +14,7 @@ const INITIAL_FILTER = { page: 0, name: "" };
 export function Missao() {
   const [filterMission, setFilterMission] = useState(INITIAL_FILTER);
   const [search, setSearch] = useState("");
+  const [register, setRegister] = useState({});
 
   const missions = useQuery(["missions", filterMission], () =>
     fetchMission(filterMission)
@@ -32,9 +33,15 @@ export function Missao() {
         name: search,
       }))
     }
-    
   }
 
+  function onChenge(event) {
+    setRegister((parameter) => ({
+      ...parameter,
+      [event.target.name]: event.target.value,
+    }))
+  }
+  
   return (
     <>
       <div className="d-flex flex-column gap-2">

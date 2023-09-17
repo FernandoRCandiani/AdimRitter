@@ -14,6 +14,7 @@ const INITIAL_FILTER = { page: 0, name: "" };
 export function Recompensa() {
   const [filterPlase, setFilterPlase] = useState(INITIAL_FILTER);
   const [search, setSearch] = useState("");
+  const [register, setRegister] = useState({});
 
   const prizes = useQuery(["prizes", filterPlase], () =>
     fetchPrizes(filterPlase)
@@ -31,6 +32,13 @@ export function Recompensa() {
         name: search,
       }));
     }
+  }
+
+  function onChenge(event) {
+    setRegister((parameter) => ({
+      ...parameter,
+      [event.target.name]: event.target.value,
+    }))
   }
 
   return (
