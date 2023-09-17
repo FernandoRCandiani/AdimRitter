@@ -5,7 +5,7 @@ import { MdPlaylistAdd } from "react-icons/md";
 
 import "./style.css";
 import { useState } from "react";
-import { fetchMission } from "../../services/fetches";
+import { fetchMissions } from "../../services/fetches";
 import { TabelaMissao } from "../../componentes/TabelaMissao";
 import { FaTimes } from "react-icons/fa";
 
@@ -17,7 +17,7 @@ export function Missao() {
   const [register, setRegister] = useState({});
 
   const missions = useQuery(["missions", filterMission], () =>
-    fetchMission(filterMission)
+    fetchMissions(filterMission)
   ).data;
 
   function cleanFilter() {
