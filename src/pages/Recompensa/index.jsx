@@ -7,6 +7,7 @@ import { TabelaRecompensa } from "../../componentes/TabelaRecompensa";
 import "./style.css";
 import { useQuery } from "react-query";
 import { fetchPrizes } from "../../services/fetches";
+import { FaTimes } from "react-icons/fa";
 
 const INITIAL_FILTER = { page: 0, name: "" };
 
@@ -17,6 +18,20 @@ export function Recompensa() {
   const prizes = useQuery(["prizes", filterPlase], () =>
     fetchPrizes(filterPlase)
   ).data;
+
+  function clearFilter() {
+    setFilterPlase(INITIAL_FILTER);
+    setSearch("");
+  }
+
+  function onSearch(event) {
+    if (event.key == "Enter") {
+      setFilterPlase((parameter) => ({
+        ...parameter,
+        name: search,
+      }));
+    }
+  }
 
   return (
     <>
@@ -40,17 +55,34 @@ export function Recompensa() {
             <div className="mh-100 tamanho">
               <div className="row justify-content-end">
                 <div className="col-4 pb-3">
-                  <form className="d-flex" role="search">
+                  <div className="d-flex" role="search">
                     <input
                       className="form-control me-2"
-                      type="search"
+                      type="text"
                       placeholder="Nome da Recompensas"
                       aria-label="Search"
+                      value={search}
+                      onChange={(event) => setSearch(event.target.value)}
+                      onKeyDown={onSearch}
                     />
-                    <button className="btn btn-outline-success" type="submit">
+                    {filterPlase.name && (
+                      <button className="btn" onClick={clearFilter}>
+                        <FaTimes />
+                      </button>
+                    )}
+                    <button
+                      className="btn btn-outline-success"
+                      type="submit"
+                      onClick={() =>
+                        setFilterPlase((parameter) => ({
+                          ...parameter,
+                          name: search,
+                        }))
+                      }
+                    >
                       Buscar
                     </button>
-                  </form>
+                  </div>
                 </div>
               </div>
 
