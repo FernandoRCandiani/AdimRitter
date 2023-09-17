@@ -4,7 +4,7 @@ export function Dash(props) {
   return (
     <div className="dash">
       <div className="dash-card">
-        <div className={["dash-card__header", props.filter ? "justify-content-between" : "justify-content-center"].join(" ")}>
+        <div className={["dash-card__header", props.filter ? "justify-content-evenly" : "justify-content-center"].join(" ")}>
           <h3 className="title">
             {props.title}
           </h3>
@@ -27,11 +27,11 @@ export function Dash(props) {
           </div>
         </div>
 
-        <div className="dash-card__footer">
+        {/* <div className="dash-card__footer">
           <button className="btn btn-primary">
             Exportar relatório
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
