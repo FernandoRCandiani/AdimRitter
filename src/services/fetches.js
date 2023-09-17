@@ -29,7 +29,25 @@ export async function fetchUserCertificates() {
 }
 
 export async function fetchGeneralRanking() {
-  const response = await api.get("/users/ranking")
+  const response = await api.get("/users/ranking");
+
+  return response.data;
+}
+
+export async function fetchUserCertificatesCompany() {
+  const response = await api.get('/usercertificates/employees');
+
+  return response.data;
+}
+
+export async function fetchTroubleCompanies() {
+  const response = await api.get('/usertroubles/report-employees')
+
+  return response.data
+}
+
+export async function fetchMissionCompanies() {
+  const response = await api.get('/userquizzes/report-companies')
 
   return response.data
 }
