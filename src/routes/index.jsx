@@ -10,6 +10,7 @@ import { Empresa } from "../pages/Empresa";
 import { Usuario } from "../pages/Usuario";
 import { Recompensa } from "../pages/Recompensa";
 import { Missao } from "../pages/Missao";
+import { Certificado } from "../pages/Certificado";
 
 import { Permission } from "../util/Permission";
 import { getUser } from "../services/auth";
@@ -20,6 +21,7 @@ const PageUsuario = Permission()(Usuario);
 const PageEmpresa = Permission()(Empresa);
 const PageRecompensa = Permission()(Recompensa);
 const PageMissao = Permission()(Missao);
+const PageCertificado = Permission()(Certificado);
 
 export function Rotas() {
   const location = useLocation();
@@ -51,6 +53,7 @@ export function Rotas() {
           <Route path="/empresa" element={<PageEmpresa />} />
           <Route path="/usuario" element={<PageUsuario />} />
           <Route path="/recompensa" element={<PageRecompensa />} />
+          <Route path="/certificado" element={<PageCertificado />} />
         </Routes>
       </section>
     </main>

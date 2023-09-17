@@ -9,7 +9,7 @@ export function Usuario() {
     <>
       <div className="d-flex flex-column gap-2">
         <div className="row align-items-center justify-content-between bg-body-tertiary shadow m-0 p-3">
-          <div className="col-3 h4">Lista das usuário cadastadas</div>
+          <div className="col-3 h4">Lista das Usuário cadastadas</div>
 
           <div className="col-3 d-flex justify-content-end">
             <button
