@@ -1,8 +1,9 @@
 import ReactModal from "react-modal";
-import { AiOutlineCloseCircle } from "react-icons/ai"
-import './style.css'
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
-ReactModal.setAppElement("#root")
+import './style.css';
+
+ReactModal.setAppElement("#root");
 
 export function Modal(props) {
   return (
@@ -12,15 +13,14 @@ export function Modal(props) {
           {props.title}
         </div>
         <div className="rModal-header__close">
-          <button onClick={props.onRequestClose && props.onRequestClose()} ><AiOutlineCloseCircle /></button>
+          <button onClick={() => props.onRequestClose && props.onRequestClose()}>
+            <AiOutlineCloseCircle />
+          </button>
         </div>
-
       </div>
       <div className="rModal-body">
-
         {props.children}
       </div>
     </ReactModal>
-  )
-    ;
+  );
 } 
