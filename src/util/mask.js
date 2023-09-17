@@ -6,7 +6,7 @@ export function cep(value) {
 }
 
 export function document(value) {
-  if (value?.length === 14) {
+  if (value?.length <= 14) {
     return value
       ?.replace(/\D/g, "")
       .replace(/(\d{3})(\d)/, "$1.$2")
