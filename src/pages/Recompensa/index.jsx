@@ -1,11 +1,46 @@
+import { useState } from "react";
 import Dropzone from "../../componentes/Dropzone";
 import { Modal } from "../../componentes/Modal";
 import { Paginacao } from "../../componentes/Paginacao";
-import { Tabela } from "../../componentes/Tabela";
+import { TabelaRecompensa } from "../../componentes/TabelaRecompensa";
 
 import "./style.css";
+import { useQuery } from "react-query";
+import { fetchPrizes } from "../../services/fetches";
+import { FaTimes } from "react-icons/fa";
+
+const INITIAL_FILTER = { page: 0, name: "" };
 
 export function Recompensa() {
+  const [filterPlase, setFilterPlase] = useState(INITIAL_FILTER);
+  const [search, setSearch] = useState("");
+  const [register, setRegister] = useState({});
+
+  const prizes = useQuery(["prizes", filterPlase], () =>
+    fetchPrizes(filterPlase)
+  ).data;
+
+  function clearFilter() {
+    setFilterPlase(INITIAL_FILTER);
+    setSearch("");
+  }
+
+  function onSearch(event) {
+    if (event.key == "Enter") {
+      setFilterPlase((parameter) => ({
+        ...parameter,
+        name: search,
+      }));
+    }
+  }
+
+  function onChenge(event) {
+    setRegister((parameter) => ({
+      ...parameter,
+      [event.target.name]: event.target.value,
+    }))
+  }
+
   return (
     <>
       <div className="d-flex flex-column gap-2">
@@ -28,17 +63,34 @@ export function Recompensa() {
             <div className="mh-100 tamanho">
               <div className="row justify-content-end">
                 <div className="col-4 pb-3">
-                  <form className="d-flex" role="search">
+                  <div className="d-flex" role="search">
                     <input
                       className="form-control me-2"
-                      type="search"
+                      type="text"
                       placeholder="Nome da Recompensas"
                       aria-label="Search"
+                      value={search}
+                      onChange={(event) => setSearch(event.target.value)}
+                      onKeyDown={onSearch}
                     />
-                    <button className="btn btn-outline-success" type="submit">
+                    {filterPlase.name && (
+                      <button className="btn" onClick={clearFilter}>
+                        <FaTimes />
+                      </button>
+                    )}
+                    <button
+                      className="btn btn-outline-success"
+                      type="submit"
+                      onClick={() =>
+                        setFilterPlase((parameter) => ({
+                          ...parameter,
+                          name: search,
+                        }))
+                      }
+                    >
                       Buscar
                     </button>
-                  </form>
+                  </div>
                 </div>
               </div>
 
@@ -53,61 +105,9 @@ export function Recompensa() {
                       <th scope="col">Infos</th>
                     </tr>
 
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
+                    {prizes?.data?.map((prize) => (
+                      <TabelaRecompensa key={prize.id} {...prize} />
+                    ))}
                   </tbody>
                 </table>
               </div>

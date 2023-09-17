@@ -64,3 +64,28 @@ export async function fetchUsers(filter) {
 
   return response.data;
 }
+
+export async function fetchPrizes(filter) {
+  const response = await api.get('/prizes', {
+    params: {
+      limit: 10,
+      page: filter.page ?? 0,
+      name: filter.name || undefined
+    }
+  });
+
+  return response.data;
+}
+
+export async function fetchMissions(filter) {
+  const response = await api.get('/missions', {
+    params: {
+      limit: 10,
+      page: filter.page ?? 0,
+      name: filter.name || undefined
+    }
+  });
+
+  return response.data;
+}
+

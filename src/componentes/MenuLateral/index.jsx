@@ -28,6 +28,7 @@ export function MenuLateral() {
                 Empresas
               </Link>
 
+<<<<<<< HEAD
               <Link to="/recompensa" className={["btn-outline-focus", "p-2", location.pathname === '/recompensa' ? 'active' : ''].join(" ")}>
                 Recompensa
               </Link>
@@ -37,6 +38,15 @@ export function MenuLateral() {
               </Link>
             </>
           )}
+=======
+          <Link to="/missao" className={["btn-outline-focus", "p-2", location.pathname === '/missao' ? 'active' : ''].join(" ")}>
+            Missao
+          </Link>
+
+          <Link to="/certificado" className={["btn-outline-focus", "p-2", location.pathname === '/certificado' ? 'active' : ''].join(" ")}>
+            Certificado
+          </Link>
+>>>>>>> 1b3080342420cd8e338fd134f747b5ff030d46f1
         </div>
       </div>
     </aside>
