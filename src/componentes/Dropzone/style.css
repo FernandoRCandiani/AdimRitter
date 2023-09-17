@@ -6,18 +6,20 @@
   justify-content: center;
   align-items: center;
   outline: 0;
+  cursor: pointer;
+  overflow: hidden;
 }
 
 .dropzone img {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: 250px;
+  object-fit: cover;
 }
 
 .dropzone p {
   width: calc(100% - 60px);
   height: calc(100% - 60px);
-
+  margin-bottom: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
