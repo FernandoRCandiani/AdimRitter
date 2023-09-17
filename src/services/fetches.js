@@ -41,38 +41,51 @@ export async function fetchUserCertificatesCompany() {
 }
 
 export async function fetchTroubleCompanies() {
-  const response = await api.get('/usertroubles/report-employees')
+  const response = await api.get('/usertroubles/report-employees');
 
-  return response.data
+  return response.data;
 }
 
 export async function fetchMissionCompanies() {
-  const response = await api.get('/userquizzes/report-companies')
+  const response = await api.get('/userquizzes/report-companies');
 
-  return response.data
+  return response.data;
 }
 
-export async function fetchPrizes(filters) {
+export async function fetchUsers(filter) {
+  const response = await api.get("/users", {
+    params: {
+      limit: 10,
+      page: filter.page ?? 0,
+      role: filter.role || undefined,
+      name: filter.name || undefined,
+    }
+  });
+
+  return response.data;
+}
+
+export async function fetchPrizes(filter) {
   const response = await api.get('/prizes', {
     params: {
       limit: 10,
-      page: filters.page,
-      name: filters.name || undefined
+      page: filter.page ?? 0,
+      name: filter.name || undefined
     }
-  })
+  });
 
-  return response.data
+  return response.data;
 }
 
-export async function fetchMissions(filters) {
+export async function fetchMissions(filter) {
   const response = await api.get('/missions', {
     params: {
       limit: 10,
-      page: filters.page,
-      name: filters.name || undefined
+      page: filter.page ?? 0,
+      name: filter.name || undefined
     }
-  })
+  });
 
-  return response.data
+  return response.data;
 }
 

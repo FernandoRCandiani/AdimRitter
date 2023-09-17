@@ -1,10 +1,14 @@
 import { useLocation, Link } from "react-router-dom";
 
+import { getUser } from '../../services/auth';
+
 import "./style.css";
 
 export function MenuLateral() {
   const location = useLocation();
-  
+
+  const user = getUser();
+
   return (
     <aside className="d-flex justify-content-start side-menu">
       <div className="shadow m-0">
@@ -18,14 +22,23 @@ export function MenuLateral() {
             Usuários
           </Link>
 
-          <Link to="/empresa" className={["btn-outline-focus", "p-2", location.pathname === '/empresa' ? 'active' : ''].join(" ")}>
-            Empresas
-          </Link>
-          
-          <Link to="/recompensa" className={["btn-outline-focus", "p-2", location.pathname === '/recompensa' ? 'active' : ''].join(" ")}>
-            Recompensa
-          </Link>
+          {user.role === 'ADMIN' && (
+            <>
+              <Link to="/empresa" className={["btn-outline-focus", "p-2", location.pathname === '/empresa' ? 'active' : ''].join(" ")}>
+                Empresas
+              </Link>
 
+<<<<<<< HEAD
+              <Link to="/recompensa" className={["btn-outline-focus", "p-2", location.pathname === '/recompensa' ? 'active' : ''].join(" ")}>
+                Recompensa
+              </Link>
+
+              <Link to="/missao" className={["btn-outline-focus", "p-2", location.pathname === '/missao' ? 'active' : ''].join(" ")}>
+                Missao
+              </Link>
+            </>
+          )}
+=======
           <Link to="/missao" className={["btn-outline-focus", "p-2", location.pathname === '/missao' ? 'active' : ''].join(" ")}>
             Missao
           </Link>
@@ -33,6 +46,7 @@ export function MenuLateral() {
           <Link to="/certificado" className={["btn-outline-focus", "p-2", location.pathname === '/certificado' ? 'active' : ''].join(" ")}>
             Certificado
           </Link>
+>>>>>>> 1b3080342420cd8e338fd134f747b5ff030d46f1
         </div>
       </div>
     </aside>
