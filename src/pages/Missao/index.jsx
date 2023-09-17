@@ -1,12 +1,40 @@
-import { Tabela } from "../../componentes/Tabela";
 import { Modal } from "../../componentes/Modal";
 import { Paginacao } from "../../componentes/Paginacao";
 
 import { MdPlaylistAdd } from "react-icons/md";
 
 import "./style.css";
+import { useState } from "react";
+import { fetchMission } from "../../services/fetches";
+import { TabelaMissao } from "../../componentes/TabelaMissao";
+import { FaTimes } from "react-icons/fa";
+
+const INITIAL_FILTER = { page: 0, name: "" };
 
 export function Missao() {
+  const [filterMission, setFilterMission] = useState(INITIAL_FILTER);
+  const [search, setSearch] = useState("");
+
+  const missions = useQuery(["missions", filterMission], () =>
+    fetchMission(filterMission)
+  ).data;
+
+  function cleanFilter() {
+    setFilterMission(INITIAL_FILTER);
+    setSearch("");
+  }
+
+  function onSearch(event) {
+    if(event.key == 'Enter') {
+
+      setFilterMission((parameter) => ({
+        ...parameter,
+        name: search,
+      }))
+    }
+    
+  }
+
   return (
     <>
       <div className="d-flex flex-column gap-2">
@@ -29,17 +57,34 @@ export function Missao() {
             <div className="mh-100 tamanho">
               <div className="row justify-content-end">
                 <div className="col-4 pb-3">
-                  <form className="d-flex" role="search">
+                  <div className="d-flex" role="search">
                     <input
                       className="form-control me-2"
-                      type="search"
+                      type="text"
                       placeholder="Nome da Missão"
                       aria-label="Search"
+                      value={search}
+                      onChange={(event) => setSearch(event.target.value)}
+                      onKeyDown={onSearch}
                     />
-                    <button className="btn btn-outline-success" type="submit">
+                    {filterMission.name && (
+                      <button className="btn" onClick={cleanFilter}>
+                        <FaTimes />
+                      </button>
+                    )}
+                    <button
+                      className="btn btn-outline-success"
+                      type="submit"
+                      onClick={() =>
+                        setFilterMission((parameter) => ({
+                          ...parameter,
+                          name: search,
+                        }))
+                      }
+                    >
                       Buscar
                     </button>
-                  </form>
+                  </div>
                 </div>
               </div>
 
@@ -48,67 +93,14 @@ export function Missao() {
                   <tbody>
                     <tr>
                       <th scope="col">Missão</th>
-                      <th scope="col">Pergunta</th>
-                      <th scope="col">Resposta</th>
-                      <th scope="col">Status</th>
+                      <th scope="col">Data</th>
+                      <th scope="col">Categoria</th>
                       <th scope="col">Infos</th>
                     </tr>
 
-                    <Tabela
-                      nome={"Fogo"}
-                      doc={"como apagar"}
-                      email={"gasolina"}
-                    />
-                    <Tabela
-                      nome={"Fogo"}
-                      doc={"como apagar"}
-                      email={"gasolina"}
-                    />
-                    <Tabela
-                      nome={"Fogo"}
-                      doc={"como apagar"}
-                      email={"gasolina"}
-                    />
-                    <Tabela
-                      nome={"Fogo"}
-                      doc={"como apagar"}
-                      email={"gasolina"}
-                    />
-                    <Tabela
-                      nome={"Fogo"}
-                      doc={"como apagar"}
-                      email={"gasolina"}
-                    />
-                    <Tabela
-                      nome={"Fogo"}
-                      doc={"como apagar"}
-                      email={"gasolina"}
-                    />
-                    <Tabela
-                      nome={"Fogo"}
-                      doc={"como apagar"}
-                      email={"gasolina"}
-                    />
-                    <Tabela
-                      nome={"Fogo"}
-                      doc={"como apagar"}
-                      email={"gasolina"}
-                    />
-                    <Tabela
-                      nome={"Fogo"}
-                      doc={"como apagar"}
-                      email={"gasolina"}
-                    />
-                    <Tabela
-                      nome={"Fogo"}
-                      doc={"como apagar"}
-                      email={"gasolina"}
-                    />
-                    <Tabela
-                      nome={"Fogo"}
-                      doc={"como apagar"}
-                      email={"gasolina"}
-                    />
+                    {missions?.data?.map((mission) => (
+                      <TabelaMissao key={mission.id} {...mission} />
+                    ))}
                   </tbody>
                 </table>
               </div>
