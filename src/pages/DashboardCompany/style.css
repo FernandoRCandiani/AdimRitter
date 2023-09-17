@@ -1,0 +1,10 @@
+.recharts-pie-sector {
+  outline: none;
+}
+
+.dashboard {
+  display: flex;
+  width: 100%;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
