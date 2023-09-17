@@ -64,3 +64,15 @@ export async function fetchPrizes(filters) {
   return response.data
 }
 
+export async function fetchMissions(filters) {
+  const response = await api.get('/missions', {
+    params: {
+      limit: 10,
+      page: filters.page,
+      name: filters.name || undefined
+    }
+  })
+
+  return response.data
+}
+
