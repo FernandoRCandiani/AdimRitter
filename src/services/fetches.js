@@ -51,3 +51,16 @@ export async function fetchMissionCompanies() {
 
   return response.data
 }
+
+export async function fetchPrizes(filters) {
+  const response = await api.get('/prizes', {
+    params: {
+      limit: 10,
+      page: filters.page,
+      name: filters.name || undefined
+    }
+  })
+
+  return response.data
+}
+

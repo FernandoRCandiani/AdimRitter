@@ -1,11 +1,23 @@
+import { useState } from "react";
 import Dropzone from "../../componentes/Dropzone";
 import { Modal } from "../../componentes/Modal";
 import { Paginacao } from "../../componentes/Paginacao";
-import { Tabela } from "../../componentes/Tabela";
+import { TabelaRecompensa } from "../../componentes/TabelaRecompensa";
 
 import "./style.css";
+import { useQuery } from "react-query";
+import { fetchPrizes } from "../../services/fetches";
+
+const INITIAL_FILTER = { page: 0, name: "" };
 
 export function Recompensa() {
+  const [filterPlase, setFilterPlase] = useState(INITIAL_FILTER);
+  const [search, setSearch] = useState("");
+
+  const prizes = useQuery(["prizes", filterPlase], () =>
+    fetchPrizes(filterPlase)
+  ).data;
+
   return (
     <>
       <div className="d-flex flex-column gap-2">
@@ -53,61 +65,9 @@ export function Recompensa() {
                       <th scope="col">Infos</th>
                     </tr>
 
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
-                    <Tabela
-                      nome={"Reciclagem"}
-                      doc={"Virtual"}
-                      email={"Comum"}
-                    />
+                    {prizes?.data?.map((prize) => (
+                      <TabelaRecompensa key={prize.id} {...prize} />
+                    ))}
                   </tbody>
                 </table>
               </div>
