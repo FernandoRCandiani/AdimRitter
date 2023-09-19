@@ -11,17 +11,19 @@ import { Usuario } from "../pages/Usuario";
 import { Recompensa } from "../pages/Recompensa";
 import { Missao } from "../pages/Missao";
 import { Certificado } from "../pages/Certificado";
+import { Perfil } from "../pages/Perfil";
 
 import { Permission } from "../util/Permission";
 import { getUser } from "../services/auth";
 
-const PageDashboard = Permission()(Dashboard);
-const PageDashboardCompany = Permission()(DashboardCompany);
-const PageUsuario = Permission()(Usuario);
-const PageEmpresa = Permission()(Empresa);
-const PageRecompensa = Permission()(Recompensa);
-const PageMissao = Permission()(Missao);
-const PageCertificado = Permission()(Certificado);
+const PageDashboard = /* Permission() */ Dashboard;
+const PageDashboardCompany = /* Permission() */ DashboardCompany;
+const PageUsuario = /* Permission() */ Usuario;
+const PageEmpresa = /* Permission() */ Empresa;
+const PageRecompensa = /* Permission() */ Recompensa;
+const PageMissao = /* Permission() */ Missao;
+const PageCertificado = /* Permission() */ Certificado;
+const PagePerfil = /* Permission() */ Perfil;
 
 export function Rotas() {
   const location = useLocation();
@@ -45,15 +47,21 @@ export function Rotas() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/missao" element={<PageMissao />} />
-          <Route path="/dashboard" element={
-            user.role === 'COMPANIES'
-              ? <PageDashboardCompany />
-              : <PageDashboard />
-          } />
+          <Route
+            path="/dashboard"
+            element={
+              user.role === "COMPANIES" ? (
+                <PageDashboardCompany />
+              ) : (
+                <PageDashboard />
+              )
+            }
+          />
           <Route path="/empresa" element={<PageEmpresa />} />
           <Route path="/usuario" element={<PageUsuario />} />
           <Route path="/recompensa" element={<PageRecompensa />} />
           <Route path="/certificado" element={<PageCertificado />} />
+          <Route path="/perfil" element={<Perfil />} />
         </Routes>
       </section>
     </main>

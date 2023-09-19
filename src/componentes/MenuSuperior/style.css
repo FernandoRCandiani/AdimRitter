@@ -8,3 +8,8 @@
 .head .profile-image {
   object-fit: cover;
 }
+
+.btn-perfil {
+  color: #000 !important;
+  text-decoration: none;
+}
