@@ -61,7 +61,7 @@ export function Rotas() {
           <Route path="/usuario" element={<PageUsuario />} />
           <Route path="/recompensa" element={<PageRecompensa />} />
           <Route path="/certificado" element={<PageCertificado />} />
-          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/perfil" element={<PagePerfil />} />
         </Routes>
       </section>
     </main>

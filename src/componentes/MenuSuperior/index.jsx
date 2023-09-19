@@ -1,14 +1,14 @@
-import { useLocation, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useGlobal } from "../../contexts/Global";
 import { getUser, signout } from "../../services/auth";
 
 import "./style.css";
+import { FaUserEdit } from "react-icons/fa";
 
 export function MenuSuperior() {
   const { handleLoader } = useGlobal();
 
   const user = getUser();
-  const location = useLocation();
 
   function logout() {
     handleLoader(true);
@@ -29,14 +29,9 @@ export function MenuSuperior() {
             height="70"
             className="d-inline-block align-text-top rounded-circle me-3 profile-image"
           />
-          <Link
-            to="/perfil"
-            className={[
-              "btn-perfil",
-              location.pathname === "/perfil" ? "active" : "",
-            ].join("")}
-          >
+          <Link to="/perfil" className={["link-perfil"].join("")}>
             Olá, {user.name ?? "Ritter Humboldt"}
+            <FaUserEdit className="icon-edit-perfil" />
           </Link>
         </div>
 
