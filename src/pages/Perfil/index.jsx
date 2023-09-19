@@ -220,7 +220,7 @@ export function Perfil() {
 
       {/* MODAL DE EDITAR SENHA */}
       <Modal
-        isOpen={true}
+        isOpen={false}
         /*  onRequestClose={() => setIsOpenModalRegister(false)} */ title={
           "Editar Senha"
         }
