@@ -8,3 +8,17 @@
 .head .profile-image {
   object-fit: cover;
 }
+
+.link-perfil {
+  display: flex;
+  align-items: center;
+  color: #000 !important;
+  text-decoration: none;
+  font-weight: bold !important;
+}
+
+.icon-edit-perfil {
+  font-size: 30px !important;
+  margin-left: 10px;
+  color: #00a49a !important;
+}
