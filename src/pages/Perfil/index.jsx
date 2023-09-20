@@ -10,21 +10,10 @@ import { cep, document, phone } from "../../util/mask";
 
 import "./style.css";
 
-const INITIAL_DATA = {
-  name: "",
-  email: "",
-  document: "",
-  gender: "",
-  cep: "",
-  address: "",
-  district: "",
-  complement: "",
-  city: "",
-  uf: "",
-  phone: "",
+const INITAL_DATA_PASSWORD = {
   oldPassword: "",
   password: "",
-  confirmPassword: "",
+  confirmPassword: ""
 };
 
 export function Perfil() {
@@ -33,6 +22,7 @@ export function Perfil() {
   const [isOpenModalEditPassword, setIsOpenModalEditPassword] = useState(false);
   const [data, setData] = useState(user);
   const [selectedFile, setSelectedFile] = useState();
+  const [dataPassword, setDataPassword] = useState(INITAL_DATA_PASSWORD);
 
   const addressRef = useRef();
   const districtRef = useRef();
@@ -82,6 +72,13 @@ export function Perfil() {
     }));
   }
 
+  function onChangePassword(event) {
+    setDataPassword((prev) => ({
+      ...prev,
+      [event.target.name]: event.target.value,
+    }));
+  }
+
   async function handleEditProfile(event) {
     event.preventDefault();
 
@@ -124,6 +121,46 @@ export function Perfil() {
     }
   }
 
+  async function changePassword(event) {
+    event.preventDefault();
+
+    handleLoader(true);
+
+    try {
+      await api.patch("/users", dataPassword);
+
+      return signout();
+    } catch (error) {
+      console.log(error)
+      const data = error?.response?.data;
+      handleMessage(data?.message ?? "Erro ao atualizar a senha", "error");
+    } finally {
+      handleLoader(false);
+    }
+  }
+
+  function onRequestClose() {
+    setDataPassword(INITAL_DATA_PASSWORD);
+    setIsOpenModalEditPassword(false);
+  }
+
+  function enabled() {
+    const required = {
+      name: data.name,
+      email: data.email,
+      document: data.document,
+      gender: data.gender,
+      cep: data.cep,
+      address: data.address,
+      district: data.district,
+      city: data.city,
+      uf: data.uf,
+      phone: data.phone,
+    };
+
+    return Object.values(required).some(i => !i);
+  }
+
   return (
     <>
       <div className="bg-body-tertiary p-3">
@@ -163,9 +200,9 @@ export function Perfil() {
                   className="form-control"
                   id="document"
                   aria-describedby="documentHelp"
-                  placeholder="Documento (CPF)"
+                  placeholder="Documento"
                   name="document"
-                  value={data.document}
+                  value={document(data.document)}
                   onChange={(e) =>
                     setData((prev) => ({
                       ...prev,
@@ -183,7 +220,7 @@ export function Perfil() {
                   aria-describedby="phoneHelp"
                   placeholder="Telefone"
                   name="phone"
-                  value={data.phone}
+                  value={phone(data.phone)}
                   onChange={(e) =>
                     setData((prev) => ({
                       ...prev,
@@ -213,7 +250,9 @@ export function Perfil() {
 
             <div className="col">
               {/* <div className="col"> */}
-              <Dropzone onFileUploaded={setSelectedFile} />
+              {user?.image
+                ? <></>
+                : <Dropzone onFileUploaded={setSelectedFile} />}
               {/* <img
                 src={"/EcoVille.png"}
                 className="h-auto w-25"
@@ -231,7 +270,7 @@ export function Perfil() {
                 aria-describedby="ceplHelp"
                 placeholder="CEP"
                 name="cep"
-                value={data.cep}
+                value={cep(data.cep)}
                 onChange={(e) =>
                   setData((prev) => ({
                     ...prev,
@@ -342,6 +381,7 @@ export function Perfil() {
               <button
                 type="submit"
                 className="btn btn-primary me-3"
+                disabled={enabled()}
               >
                 Editar perfil
               </button>
@@ -359,10 +399,10 @@ export function Perfil() {
       {/* MODAL DE EDITAR SENHA */}
       <Modal
         isOpen={isOpenModalEditPassword}
-        onRequestClose={() => setIsOpenModalEditPassword(false)}
+        onRequestClose={onRequestClose}
         title={"Editar Senha"}
       >
-        <form>
+        <form onSubmit={changePassword}>
           <div className="row justify-content-center">
             <div className="col-5">
               <div className="align-self-center mb-3">
@@ -371,10 +411,10 @@ export function Perfil() {
                   className="form-control"
                   id="passwordAntiga"
                   aria-describedby="passwordAntigaHelp"
-                  placeholder="Senha Antiga"
+                  placeholder="Senha atual"
                   name="oldPassword"
-                  value={data.oldPassword}
-                  onChange={onChange}
+                  value={dataPassword.oldPassword}
+                  onChange={onChangePassword}
                 />
               </div>
               <div className=" mb-3">
@@ -383,10 +423,10 @@ export function Perfil() {
                   className="form-control"
                   id="passwordNova"
                   aria-describedby="passwordNovaHelp"
-                  placeholder="Senha Nova"
+                  placeholder="Nova senha"
                   name="password"
-                  value={data.password}
-                  onChange={onChange}
+                  value={dataPassword.password}
+                  onChange={onChangePassword}
                 />
               </div>
 
@@ -396,16 +436,25 @@ export function Perfil() {
                   className="form-control"
                   id="passwordConfirmarSenha"
                   aria-describedby="passwordConfirmarSenhaHelp"
-                  placeholder="Confirmar Senha Nova"
+                  placeholder="Confirmar nova senha"
                   name="confirmPassword"
-                  value={data.confirmPassword}
-                  onChange={onChange}
+                  value={dataPassword.confirmPassword}
+                  onChange={onChangePassword}
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary">
-                Salvar
-              </button>
+              <div className="row">
+                <div className="col">
+                  <button type="submit" className="btn btn-primary w-100">
+                    Atualizar senha
+                  </button>
+                </div>
+                <div className="col">
+                  <button type="button" className="btn btn-danger w-100" onClick={onRequestClose}>
+                    Cancelar
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </form>
