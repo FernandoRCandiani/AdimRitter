@@ -1,44 +1,98 @@
 import { useState } from "react";
+import { FaTimes } from "react-icons/fa";
+import { useQuery } from "react-query";
+
 import Dropzone from "../../componentes/Dropzone";
 import { Modal } from "../../componentes/Modal";
 import { Paginacao } from "../../componentes/Paginacao";
 import { TabelaRecompensa } from "../../componentes/TabelaRecompensa";
 
-import "./style.css";
-import { useQuery } from "react-query";
+import { useGlobal } from "../../contexts/Global";
+import { api } from "../../services/api";
 import { fetchPrizes } from "../../services/fetches";
-import { FaTimes } from "react-icons/fa";
 
-const INITIAL_FILTER = { page: 0, name: "" };
+import "./style.css";
+import { queryClient } from "../../services/queryClient";
+
+const INITIAL_FILTER = {
+  page: 0,
+  name: ""
+};
+
+const INITIAL_REGISTER = {
+  name: "",
+  rarity: "",
+  type: ""
+};
 
 export function Recompensa() {
-  const [filterPlase, setFilterPlase] = useState(INITIAL_FILTER);
+  const [filterPrize, setFilterPrize] = useState(INITIAL_FILTER);
   const [search, setSearch] = useState("");
-  const [register, setRegister] = useState({});
+  const [register, setRegister] = useState(INITIAL_REGISTER);
+  const [selectedFile, setSelectFile] = useState();
+  const [isOpenModalRegister, setIsOpenModalRegister] = useState(false);
+  const [selectedPrize, setSelectedPrize] = useState();
+  const [isOpenModalInfo, setIsOpenModalInfo] = useState(false);
 
-  const prizes = useQuery(["prizes", filterPlase], () =>
-    fetchPrizes(filterPlase)
-  ).data;
+  const { handleLoader, handleMessage } = useGlobal();
+
+  const prizes = useQuery(["prizes", filterPrize], () => fetchPrizes(filterPrize)).data;
 
   function clearFilter() {
-    setFilterPlase(INITIAL_FILTER);
+    setFilterPrize(INITIAL_FILTER);
     setSearch("");
   }
 
   function onSearch(event) {
     if (event.key == "Enter") {
-      setFilterPlase((parameter) => ({
-        ...parameter,
+      setFilterPrize((prev) => ({
+        ...prev,
         name: search,
       }));
     }
   }
 
-  function onChenge(event) {
-    setRegister((parameter) => ({
-      ...parameter,
+  function onChange(event) {
+    setRegister((prev) => ({
+      ...prev,
       [event.target.name]: event.target.value,
-    }))
+    }));
+  }
+
+  async function handleRegister(event) {
+    event.preventDefault();
+
+    handleLoader(true);
+
+    const formData = new FormData();
+
+    const values = Object.values(register);
+    const keys = Object.keys(register);
+
+    for (const key in values) {
+      formData.append([keys[key]], values[key]);
+    }
+
+    formData.append("media", selectedFile);
+
+    try {
+      await api.post("/prizes", formData);
+
+      setFilterPrize(INITIAL_FILTER);
+      handleMessage("Recompensa cadastrada com sucesso!", "success");
+      queryClient.refetchQueries(["prizes", filterPrize]);
+    } catch (error) {
+      const data = error?.response?.data;
+      handleMessage(data?.message ?? "Erro ao cadastrar recompensa");
+    } finally {
+      handleLoader(false);
+    }
+  }
+
+  async function getInfoPrize(id) {
+    const response = await api.get(`/prizes/${id}`);
+    setSelectedPrize(response.data);
+    setIsOpenModalInfo(true);
   }
 
   return (
@@ -51,6 +105,7 @@ export function Recompensa() {
             <button
               type="button"
               className="d-flex btn btn-primary align-items-center"
+              onClick={() => setIsOpenModalRegister(true)}
             >
               <img src="./plus-circle.svg" alt="" className="pe-2" />
               Cadastrar Recompensas
@@ -73,7 +128,7 @@ export function Recompensa() {
                       onChange={(event) => setSearch(event.target.value)}
                       onKeyDown={onSearch}
                     />
-                    {filterPlase.name && (
+                    {filterPrize.name && (
                       <button className="btn" onClick={clearFilter}>
                         <FaTimes />
                       </button>
@@ -82,8 +137,8 @@ export function Recompensa() {
                       className="btn btn-outline-success"
                       type="submit"
                       onClick={() =>
-                        setFilterPlase((parameter) => ({
-                          ...parameter,
+                        setFilterPrize((prev) => ({
+                          ...prev,
                           name: search,
                         }))
                       }
@@ -106,7 +161,11 @@ export function Recompensa() {
                     </tr>
 
                     {prizes?.data?.map((prize) => (
-                      <TabelaRecompensa key={prize.id} {...prize} />
+                      <TabelaRecompensa
+                        key={prize.id}
+                        info={() => getInfoPrize(prize.id)}
+                        {...prize}
+                      />
                     ))}
                   </tbody>
                 </table>
@@ -114,9 +173,15 @@ export function Recompensa() {
             </div>
 
             <div className="row align-items-center justify-content-between">
-              <div className="col-3">200 recompensas cadastradas</div>
+              <div className="col-3">
+                {prizes?.totalItems} recompensas cadastradas
+              </div>
               <div className="col-3 d-flex justify-content-end">
-                <Paginacao />
+                <Paginacao
+                  current={filterPrize?.page}
+                  totalPages={prizes?.totalPages}
+                  setCurrent={page => setFilterPrize(prev => ({ ...prev, page }))}
+                />
               </div>
             </div>
           </div>
@@ -125,11 +190,11 @@ export function Recompensa() {
 
       {/* MODAL DE CADASTRO */}
       <Modal
-        isOpen={false}
-        onRequestClose={() => {}}
+        isOpen={isOpenModalRegister}
+        onRequestClose={() => setIsOpenModalRegister(false)}
         title={"Criar Recompensa"}
       >
-        <form>
+        <form onSubmit={handleRegister}>
           <div className="row mb-4 ">
             <div className="col">
               <div className="mb-3">
@@ -139,6 +204,9 @@ export function Recompensa() {
                   id="nome"
                   aria-describedby="nomeHelp"
                   placeholder="Nome da recompensa"
+                  name="name"
+                  value={register.name}
+                  onChange={onChange}
                 />
               </div>
 
@@ -146,10 +214,13 @@ export function Recompensa() {
                 <select
                   className="form-select"
                   aria-label="Default select example"
+                  name="type"
+                  value={register.type}
+                  onChange={onChange}
                 >
-                  <option selected>Tipo</option>
-                  <option value="1">Físico</option>
-                  <option value="2">Vitual</option>
+                  <option value="" disabled>Tipo</option>
+                  <option value="VIRTUAL">Virtual</option>
+                  <option value="PHYSICAL">Físico</option>
                 </select>
               </div>
 
@@ -157,49 +228,37 @@ export function Recompensa() {
                 <select
                   className="form-select"
                   aria-label="Default select example"
+                  name="rarity"
+                  value={register.rarity}
+                  onChange={onChange}
                 >
-                  <option selected>Raridade</option>
-                  <option value="1">Comum</option>
-                  <option value="2">Incomum</option>
-                  <option value="3">Épico</option>
-                  <option value="4">Raro</option>
-                  <option value="5">Lendário</option>
-                  <option value="6">Limitado</option>
+                  <option value="" disabled>Raridade</option>
+                  <option value="COMMON">Comum</option>
+                  <option value="UNCOMMON">Incomum</option>
+                  <option value="EPIC">Épico</option>
+                  <option value="RARE">Raro</option>
+                  <option value="LENDARY">Lendário</option>
+                  <option value="LIMITED">Limitado</option>
                 </select>
                 <div className="notacao">
                   Obs: Toda recompensa física é limitada por padrão
                 </div>
               </div>
-
-              <div className="form-check form-switch">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  role="switch"
-                  id="flexSwitchCheckChecked"
-                />
-                <label
-                  className="form-check-label"
-                  for="flexSwitchCheckChecked"
-                >
-                  Ativar Recompensa
-                </label>
-              </div>
             </div>
 
             <div className="col">
-              <Dropzone />
+              <Dropzone onFileUploaded={setSelectFile} />
             </div>
           </div>
 
           <button type="submit" className="btn btn-primary">
-            Criar
+            Cadastrar recompensa
           </button>
         </form>
       </Modal>
 
       {/* MODAL DE INFORMAÇÃO */}
-      <Modal isOpen={false} onRequestClose={() => {}} title={"Recompensa"}>
+      <Modal isOpen={false} onRequestClose={() => { }} title={"Recompensa"}>
         <form>
           <div className="row mb-4 ">
             <div className="col text-start">
