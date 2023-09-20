@@ -30,7 +30,7 @@ const Dropzone = ({ onFileUploaded }) => {
       <input {...getInputProps()} />
 
       {selectFile
-        ? <img src={selectFile} alt="Ponto de coleta" />
+        ? <div style={{ backgroundImage: `url(${selectFile})` }} className='dropzone-image' />
         : (
           <p>
             <FiUpload />
