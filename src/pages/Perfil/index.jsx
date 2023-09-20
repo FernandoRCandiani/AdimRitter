@@ -1,162 +1,134 @@
+import axios from "axios";
 import { useRef, useState } from "react";
+
 import Dropzone from "../../componentes/Dropzone";
 import { Modal } from "../../componentes/Modal";
 import { useGlobal } from "../../contexts/Global";
-import "./style.css";
 import { api } from "../../services/api";
+import { signout } from "../../services/auth";
 import { cep, document, phone } from "../../util/mask";
 
-const INITIAL_CHANGE_DATA = {
-  name: "Diana",
-  email: "diana@email.com",
-  document: "123.123.123-00",
-  gender: "Feminina",
-  cep: "00000-000",
-  address: "Av. Lins",
-  district: "Vila Mariana",
+import "./style.css";
+
+const INITIAL_DATA = {
+  name: "",
+  email: "",
+  document: "",
+  gender: "",
+  cep: "",
+  address: "",
+  district: "",
   complement: "",
-  city: "São Paulo",
-  uf: "SP",
-  phone: "(11) 99999-9999",
+  city: "",
+  uf: "",
+  phone: "",
+  oldPassword: "",
+  password: "",
+  confirmPassword: "",
 };
 
 export function Perfil() {
-  const { handleLoader, handleMessage } = useGlobal();
+  const { handleLoader, handleMessage, user, handleUser } = useGlobal();
 
   const [isOpenModalEditPassword, setIsOpenModalEditPassword] = useState(false);
-  const [changeData, setChangeData] = useState(INITIAL_CHANGE_DATA);
-  const [edit, setEdit] = useState(false);
+  const [data, setData] = useState(user);
+  const [selectedFile, setSelectedFile] = useState();
 
-  const nameRef = useRef();
-  const emailRef = useRef();
-  const documentRef = useRef();
-  const phoneRef = useRef();
-  const genderRef = useRef();
-  const cepRef = useRef();
   const addressRef = useRef();
   const districtRef = useRef();
-  const complementRef = useRef();
-  const cityRef = useRef();
-  const ufRef = useRef();
-  const buttonConsultCepRef = useRef();
-  const buttonSaveRef = useRef();
 
-  function editPerfil() {
-    if (!edit) {
-      setEdit(true);
-      nameRef.current?.removeAttribute("disabled");
-      emailRef.current?.removeAttribute("disabled");
-      documentRef.current?.removeAttribute("disabled");
-      phoneRef.current?.removeAttribute("disabled");
-      genderRef.current?.removeAttribute("disabled");
-      cepRef.current?.removeAttribute("disabled");
-      addressRef.current?.removeAttribute("disabled");
-      districtRef.current?.removeAttribute("disabled");
-      complementRef.current?.removeAttribute("disabled");
-      cityRef.current?.removeAttribute("disabled");
-      ufRef.current?.removeAttribute("disabled");
-      buttonConsultCepRef.current?.removeAttribute("disabled");
-      buttonSaveRef.current?.removeAttribute("disabled");
-    } else {
-      setEdit(false);
-      nameRef.current?.setAttribute("disabled", "true");
-      emailRef.current?.setAttribute("disabled", "true");
-      documentRef.current?.setAttribute("disabled", "true");
-      phoneRef.current?.setAttribute("disabled", "true");
-      genderRef.current?.setAttribute("disabled", "true");
-      cepRef.current?.setAttribute("disabled", "true");
-      addressRef.current?.setAttribute("disabled", "true");
-      districtRef.current?.setAttribute("disabled", "true");
-      complementRef.current?.setAttribute("disabled", "true");
-      cityRef.current?.setAttribute("disabled", "true");
-      ufRef.current?.setAttribute("disabled", "true");
-      buttonConsultCepRef.current?.setAttribute("disabled", "true");
-      buttonSaveRef.current?.setAttribute("disabled", "true");
+  async function searchCep() {
+    handleLoader(true);
+
+    try {
+      const response = await axios.get(
+        `https://viacep.com.br/ws/${data.cep}/json/`
+      );
+
+      if (response.data.erro) {
+        handleLoader(false);
+        handleMessage("CEP inválido", "error");
+        return;
+      }
+
+      const { logradouro, localidade, uf, bairro } = response.data;
+
+      setData((prev) => ({
+        ...prev,
+        address: logradouro,
+        city: localidade,
+        district: bairro,
+        uf,
+      }));
+
+      !logradouro
+        ? addressRef.current?.removeAttribute("disabled")
+        : addressRef.current?.setAttribute("disabled", "true");
+
+      !bairro
+        ? districtRef.current?.removeAttribute("disabled")
+        : districtRef.current?.setAttribute("disabled", "true");
+    } catch (error) {
+      handleMessage("CEP inválido", "error");
+    } finally {
+      handleLoader(false);
     }
   }
 
-  // async function searchCep() {
-  //   handleLoader(true);
-
-  //   try {
-  //     const response = await axios.get(
-  //       `https://viacep.com.br/ws/${changeData.cep}/json/`
-  //     );
-
-  //     if (response.data.erro) {
-  //       handleLoader(false);
-  //       handleMessage("CEP inválido");
-  //       return;
-  //     }
-
-  //     const { logradouro, localidade, uf, bairro } = response.data;
-
-  //     setChangeData((prev) => ({
-  //       ...prev,
-  //       address: logradouro,
-  //       city: localidade,
-  //       district: bairro,
-  //       uf,
-  //     }));
-
-  //     !logradouro
-  //       ? addressRef.current?.removeAttribute("disabled")
-  //       : addressRef.current?.setAttribute("disabled", "true");
-
-  //     !bairro
-  //       ? districtRef.current?.removeAttribute("disabled")
-  //       : districtRef.current?.setAttribute("disabled", "true");
-  //   } catch (error) {
-  //     handleMessage("CEP inválido");
-  //   } finally {
-  //     handleLoader(false);
-  //   }
-  // }
-
   function onChange(event) {
-    setChangeData((prev) => ({
+    setData((prev) => ({
       ...prev,
       [event.target.name]: event.target.value,
     }));
   }
 
-  async function handleChange(event) {
+  async function handleEditProfile(event) {
     event.preventDefault();
 
-    // handleLoader(true);
+    handleLoader(true);
 
     const formData = new FormData();
 
-    formData.append("name", changeData.name);
-    formData.append("email", changeData.email);
-    formData.append("document", changeData.document);
-    formData.append("gender", changeData.gender);
-    formData.append("cep", changeData.cep);
-    formData.append("address", changeData.address);
-    formData.append("district", changeData.district);
-    formData.append("complement", changeData.complement);
-    formData.append("city", changeData.city);
-    formData.append("uf", changeData.uf);
-    formData.append("phone", changeData.phone);
-    // formData.append("media", selectedFile);
+    let form = {};
 
-    // try {
-    //   await api.post("/users", formData);
-    //   setFilterUser(INITIAL_FILTER);
-    //   handleMessage("Usuário criado com sucesso", "success");
-    //   queryClient.refetchQueries(['users', filterUser]);
-    // } catch (error) {
-    //   handleMessage("Erro ao criar usuário", "error");
-    // } finally {
-    //   handleLoader(false);
-    // }
+    const values = Object.values(data);
+    const keys = Object.keys(data);
+
+    for (const key in values) {
+      if (values[key] !== user[keys[key]]) {
+        Object.assign(form, { [keys[key]]: values[key] });
+
+        formData.append([keys[key]], values[key]);
+      }
+    }
+
+    if (selectedFile) formData.append("media", selectedFile);
+
+    try {
+      await api.patch("/users", formData);
+      handleMessage("Perfil atualizado com sucesso", "success");
+
+      switch (true) {
+        case data.email !== user.email:
+        case data.document !== user.document:
+          return signout();
+        default:
+          break;
+      }
+
+      handleUser(data);
+    } catch (error) {
+      handleMessage("Erro ao editar perfil", "error");
+    } finally {
+      handleLoader(false);
+    }
   }
 
   return (
     <>
       <div className="bg-body-tertiary p-3">
         <div className="col-3 h4 pb-3">Informações do Perfil</div>
-        <form onSubmit={handleChange}>
+        <form onSubmit={handleEditProfile}>
           <div className="row mb-4">
             <div className="col">
               <div className="mb-3">
@@ -164,13 +136,11 @@ export function Perfil() {
                   type="text"
                   className="form-control"
                   id="name"
-                  disabled
                   aria-describedby="nameHelp"
                   placeholder="Nome do funcionario"
                   name="name"
-                  value={changeData.name}
+                  value={data.name}
                   onChange={onChange}
-                  ref={nameRef}
                 />
               </div>
 
@@ -179,13 +149,11 @@ export function Perfil() {
                   type="email"
                   className="form-control"
                   id="email"
-                  disabled
                   aria-describedby="emailHelp"
                   placeholder="Email"
                   name="email"
-                  value={changeData.email}
+                  value={data.email}
                   onChange={onChange}
-                  ref={emailRef}
                 />
               </div>
 
@@ -194,18 +162,16 @@ export function Perfil() {
                   type="text"
                   className="form-control"
                   id="document"
-                  disabled
                   aria-describedby="documentHelp"
                   placeholder="Documento (CPF)"
                   name="document"
-                  value={changeData.document}
+                  value={data.document}
                   onChange={(e) =>
-                    setChangeData((prev) => ({
+                    setData((prev) => ({
                       ...prev,
                       document: document(e.target.value),
                     }))
                   }
-                  ref={documentRef}
                 />
               </div>
 
@@ -214,18 +180,16 @@ export function Perfil() {
                   type="text"
                   className="form-control"
                   id="phone"
-                  disabled
                   aria-describedby="phoneHelp"
                   placeholder="Telefone"
                   name="phone"
-                  value={changeData.phone}
+                  value={data.phone}
                   onChange={(e) =>
-                    setChangeData((prev) => ({
+                    setData((prev) => ({
                       ...prev,
                       phone: phone(e.target.value),
                     }))
                   }
-                  ref={phoneRef}
                 />
               </div>
 
@@ -234,10 +198,8 @@ export function Perfil() {
                   className="form-select"
                   aria-label="Default select example"
                   name="gender"
-                  disabled
-                  value={changeData.gender}
+                  value={data.gender}
                   onChange={onChange}
-                  ref={genderRef}
                 >
                   <option value="" disabled>
                     Sexo
@@ -249,14 +211,14 @@ export function Perfil() {
               </div>
             </div>
 
-            <div className="col text-center d-flex justify-content-center align-items-center">
+            <div className="col">
               {/* <div className="col"> */}
-              {/* <Dropzone  onFileUploaded={setSelectedFile} /> */}
-              <img
+              <Dropzone onFileUploaded={setSelectedFile} />
+              {/* <img
                 src={"/EcoVille.png"}
                 className="h-auto w-25"
                 alt="Foto de usuario"
-              />
+              /> */}
             </div>
           </div>
 
@@ -266,18 +228,16 @@ export function Perfil() {
                 type="text"
                 className="form-control"
                 id="cep"
-                disabled
                 aria-describedby="ceplHelp"
                 placeholder="CEP"
                 name="cep"
-                value={changeData.cep}
+                value={data.cep}
                 onChange={(e) =>
-                  setChangeData((prev) => ({
+                  setData((prev) => ({
                     ...prev,
                     cep: cep(e.target.value),
                   }))
                 }
-                ref={cepRef}
               />
             </div>
 
@@ -285,10 +245,8 @@ export function Perfil() {
               <button
                 type="button"
                 className="btn btn-primary w-100"
-                // onClick={searchCep}
-                // disabled={!changeData.cep}
-                disabled
-                ref={buttonConsultCepRef}
+                onClick={searchCep}
+                disabled={!data.cep}
               >
                 Consultar
               </button>
@@ -303,7 +261,7 @@ export function Perfil() {
                 aria-describedby="addressHelp"
                 placeholder="Endereço"
                 name="address"
-                value={changeData.address}
+                value={data.address}
                 onChange={onChange}
                 ref={addressRef}
               />
@@ -320,7 +278,7 @@ export function Perfil() {
                 aria-describedby="districtHelp"
                 placeholder="Bairro"
                 name="district"
-                value={changeData.district}
+                value={data.district}
                 onChange={onChange}
                 ref={districtRef}
               />
@@ -331,13 +289,11 @@ export function Perfil() {
                 type="text"
                 className="form-control"
                 id="complement"
-                disabled
                 aria-describedby="complementHelp"
                 placeholder="Complemento"
                 name="complement"
-                value={changeData.complement}
+                value={data.complement}
                 onChange={onChange}
-                ref={complementRef}
               />
             </div>
           </div>
@@ -352,9 +308,8 @@ export function Perfil() {
                 aria-describedby="cityHelp"
                 placeholder="Cidade"
                 name="city"
-                value={changeData.city}
+                value={data.city}
                 onChange={onChange}
-                ref={cityRef}
               />
             </div>
 
@@ -367,9 +322,8 @@ export function Perfil() {
                 aria-describedby="ufHelp"
                 placeholder="Estado"
                 name="uf"
-                value={changeData.uf}
+                value={data.uf}
                 onChange={onChange}
-                ref={ufRef}
               />
             </div>
           </div>
@@ -386,19 +340,16 @@ export function Perfil() {
             </div>
             <div className="col d-flex justify-content-end">
               <button
-                type="button"
+                type="submit"
                 className="btn btn-primary me-3"
-                onClick={editPerfil}
               >
-                {edit ? "Cancelar" : "Editar"}
+                Editar perfil
               </button>
               <button
-                type="submit"
+                type="button"
                 className="btn btn-danger"
-                disabled
-                ref={buttonSaveRef}
               >
-                Salvar
+                Cancelar
               </button>
             </div>
           </div>
@@ -421,7 +372,9 @@ export function Perfil() {
                   id="passwordAntiga"
                   aria-describedby="passwordAntigaHelp"
                   placeholder="Senha Antiga"
-                  name="passwordAntiga"
+                  name="oldPassword"
+                  value={data.oldPassword}
+                  onChange={onChange}
                 />
               </div>
               <div className=" mb-3">
@@ -431,7 +384,9 @@ export function Perfil() {
                   id="passwordNova"
                   aria-describedby="passwordNovaHelp"
                   placeholder="Senha Nova"
-                  name="passwordNova"
+                  name="password"
+                  value={data.password}
+                  onChange={onChange}
                 />
               </div>
 
@@ -442,7 +397,9 @@ export function Perfil() {
                   id="passwordConfirmarSenha"
                   aria-describedby="passwordConfirmarSenhaHelp"
                   placeholder="Confirmar Senha Nova"
-                  name="passwordConfirmarSenha"
+                  name="confirmPassword"
+                  value={data.confirmPassword}
+                  onChange={onChange}
                 />
               </div>
 
