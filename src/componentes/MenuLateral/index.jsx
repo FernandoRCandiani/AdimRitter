@@ -1,13 +1,13 @@
 import { useLocation, Link } from "react-router-dom";
 
-import { getUser } from '../../services/auth';
+import { useGlobal } from '../../contexts/Global';
 
 import "./style.css";
 
 export function MenuLateral() {
   const location = useLocation();
 
-  const user = getUser();
+  const { user } = useGlobal();
 
   return (
     <aside className="d-flex justify-content-start side-menu">

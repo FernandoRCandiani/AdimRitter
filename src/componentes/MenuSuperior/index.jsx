@@ -1,14 +1,13 @@
+import { FaUserEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
+
 import { useGlobal } from "../../contexts/Global";
-import { getUser, signout } from "../../services/auth";
+import { signout } from "../../services/auth";
 
 import "./style.css";
-import { FaUserEdit } from "react-icons/fa";
 
 export function MenuSuperior() {
-  const { handleLoader } = useGlobal();
-
-  const user = getUser();
+  const { handleLoader, user } = useGlobal();
 
   function logout() {
     handleLoader(true);
