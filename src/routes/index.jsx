@@ -13,8 +13,8 @@ import { Missao } from "../pages/Missao";
 import { Certificado } from "../pages/Certificado";
 import { Perfil } from "../pages/Perfil";
 
+import { useGlobal } from "../contexts/Global";
 import { Permission } from "../util/Permission";
-import { getUser } from "../services/auth";
 
 const PageDashboard = /* Permission() */ Dashboard;
 const PageDashboardCompany = /* Permission() */ DashboardCompany;
@@ -28,7 +28,7 @@ const PagePerfil = /* Permission() */ Perfil;
 export function Rotas() {
   const location = useLocation();
 
-  const user = getUser();
+  const { user } = useGlobal();
 
   return (
     <main className="page">
@@ -50,7 +50,7 @@ export function Rotas() {
           <Route
             path="/dashboard"
             element={
-              user.role === "COMPANIES" ? (
+              user?.role === "COMPANIES" ? (
                 <PageDashboardCompany />
               ) : (
                 <PageDashboard />
