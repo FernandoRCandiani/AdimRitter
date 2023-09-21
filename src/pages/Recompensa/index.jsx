@@ -10,9 +10,10 @@ import { TabelaRecompensa } from "../../componentes/TabelaRecompensa";
 import { useGlobal } from "../../contexts/Global";
 import { api } from "../../services/api";
 import { fetchPrizes } from "../../services/fetches";
+import { queryClient } from "../../services/queryClient";
+import { showRarity, showTypePrize } from "../../util";
 
 import "./style.css";
-import { queryClient } from "../../services/queryClient";
 
 const INITIAL_FILTER = {
   page: 0,
@@ -90,9 +91,13 @@ export function Recompensa() {
   }
 
   async function getInfoPrize(id) {
+    handleLoader(true);
+
     const response = await api.get(`/prizes/${id}`);
     setSelectedPrize(response.data);
     setIsOpenModalInfo(true);
+
+    handleLoader(false);
   }
 
   return (
@@ -258,30 +263,30 @@ export function Recompensa() {
       </Modal>
 
       {/* MODAL DE INFORMAÇÃO */}
-      <Modal isOpen={false} onRequestClose={() => { }} title={"Recompensa"}>
+      <Modal isOpen={isOpenModalInfo} onRequestClose={() => setIsOpenModalInfo(false)} title={"Recompensa"}>
         <form>
           <div className="row mb-4 ">
             <div className="col text-start">
               <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-                Nome: Reciclagem
+                Nome: {selectedPrize?.name}
               </div>
 
               <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-                Tipo: Virtual
+                Tipo: {showTypePrize(selectedPrize?.type)}
               </div>
 
               <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-                Raridade: Comum
+                Raridade: {showRarity(selectedPrize?.rarity)}
               </div>
 
               <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-                Status: Ativo
+                Status: {selectedPrize?.active ? "Ativo" : "Inativo"}
               </div>
             </div>
 
             <div className="col text-center d-flex justify-content-center align-items-center">
               <img
-                src="/EcoVille.png"
+                src={selectedPrize?.image}
                 className="h-auto w-50"
                 alt="Foto de usuario"
               />
