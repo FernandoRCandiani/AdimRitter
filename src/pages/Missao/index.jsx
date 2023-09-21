@@ -1,24 +1,32 @@
+import { addDays, format, startOfToday } from 'date-fns';
+import { useState } from "react";
+import { FaTimes } from "react-icons/fa";
+import { MdPlaylistAdd } from "react-icons/md";
+import { useQuery } from 'react-query';
+
 import { Modal } from "../../componentes/Modal";
 import { Paginacao } from "../../componentes/Paginacao";
+import { TabelaMissao } from "../../componentes/TabelaMissao";
 
-import { MdPlaylistAdd } from "react-icons/md";
+import { fetchMissions } from "../../services/fetches";
 
 import "./style.css";
-import { useState } from "react";
-import { fetchMissions } from "../../services/fetches";
-import { TabelaMissao } from "../../componentes/TabelaMissao";
-import { FaTimes } from "react-icons/fa";
 
-const INITIAL_FILTER = { page: 0, name: "" };
+const INITIAL_FILTER = {
+  page: 0,
+  name: ""
+};
+
 
 export function Missao() {
   const [filterMission, setFilterMission] = useState(INITIAL_FILTER);
   const [search, setSearch] = useState("");
   const [register, setRegister] = useState({});
+  const [isOpenModalRegister, setIsOpenModalRegister] = useState(false);
 
-  const missions = useQuery(["missions", filterMission], () =>
-    fetchMissions(filterMission)
-  ).data;
+  const missions = useQuery(["missions", filterMission], () => fetchMissions(filterMission)).data;
+
+  const today = startOfToday();
 
   function cleanFilter() {
     setFilterMission(INITIAL_FILTER);
@@ -26,22 +34,21 @@ export function Missao() {
   }
 
   function onSearch(event) {
-    if(event.key == 'Enter') {
-
+    if (event.key === 'Enter') {
       setFilterMission((parameter) => ({
         ...parameter,
         name: search,
-      }))
+      }));
     }
   }
 
-  function onChenge(event) {
-    setRegister((parameter) => ({
-      ...parameter,
+  function onChange(event) {
+    setRegister((prev) => ({
+      ...prev,
       [event.target.name]: event.target.value,
-    }))
+    }));
   }
-  
+
   return (
     <>
       <div className="d-flex flex-column gap-2">
@@ -52,6 +59,7 @@ export function Missao() {
             <button
               type="button"
               className="d-flex btn btn-primary align-items-center"
+              onClick={() => setIsOpenModalRegister(true)}
             >
               <img src="./plus-circle.svg" alt="" className="pe-2" />
               Cadastrar Missões
@@ -124,7 +132,7 @@ export function Missao() {
       </div>
 
       {/* MODAL DE CADASTRO */}
-      <Modal isOpen={false} onRequestClose={() => {}} title={"Missões"}>
+      <Modal isOpen={isOpenModalRegister} onRequestClose={() => setIsOpenModalRegister(false)} title={"Missões"}>
         {/* CRIAR MISSÃO */}
         <form>
           <div className="h5 mb-2">Formulário para criação de missão</div>
@@ -137,6 +145,9 @@ export function Missao() {
                 id="nome"
                 aria-describedby="nomeHelp"
                 placeholder="Nome da missão"
+                name="name"
+                value={register.name}
+                onChange={onChange}
               />
             </div>
 
@@ -147,6 +158,11 @@ export function Missao() {
                 id="data"
                 aria-describedby="datalHelp"
                 placeholder="Data da missão"
+                min={format(addDays(today, 2), "yyyy'-'MM'-'dd")}
+                max="9999-12-31"
+                name="startsAt"
+                value={register.startsAt}
+                onChange={onChange}
               />
             </div>
 
@@ -154,8 +170,11 @@ export function Missao() {
               <select
                 className="form-select"
                 aria-label="Default select example"
+                name="categoryId"
+                value={register.categoryId}
+                onChange={onChange}
               >
-                <option selected>Categoria</option>
+                <option value="" disabled>Categoria</option>
                 <option value="1">Aeropaortuária</option>
                 <option value="2">Incêndio</option>
                 <option value="3">Coleta residual</option>
@@ -262,7 +281,7 @@ export function Missao() {
       </Modal>
 
       {/* MODAL DE INFORMAÇÃO */}
-      <Modal isOpen={false} onRequestClose={() => {}} title={"Missão"}>
+      <Modal isOpen={false} onRequestClose={() => { }} title={"Missão"}>
         <form>
           <div className="row mb-4 ">
             <div className="h5 mb-2">Sobre missão</div>
