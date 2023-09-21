@@ -4,7 +4,7 @@ import { FiUpload } from 'react-icons/fi';
 
 import './style.css';
 
-const Dropzone = ({ onFileUploaded }) => {
+const Dropzone = ({ onFileUploaded, image }) => {
   const [selectFile, setSelectFile] = useState('');
 
   const onDrop = useCallback(acceptFiles => {
@@ -29,8 +29,8 @@ const Dropzone = ({ onFileUploaded }) => {
     <div {...getRootProps()} className="dropzone">
       <input {...getInputProps()} />
 
-      {selectFile
-        ? <img src={selectFile} alt="Ponto de coleta" />
+      {selectFile || image
+        ? <div style={{ backgroundImage: `url(${selectFile || image})` }} className='dropzone-image' />
         : (
           <p>
             <FiUpload />

@@ -37,7 +37,7 @@ export function Login() {
 
       await sleep();
 
-      if (response.data.user.role === ROLE.EMPLOYEES) {
+      if (response.data.role === ROLE.EMPLOYEES) {
         handleLoader(false);
         return handleMessage("Você não tem acesso", 'error');
       }

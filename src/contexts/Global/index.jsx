@@ -1,6 +1,8 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import toast, { Toaster } from "react-hot-toast";
+
+import { getUser, setUser as saveUser } from '../../services/auth';
 
 import './style.css';
 
@@ -10,6 +12,11 @@ export const useGlobal = () => useContext(GlobalContext);
 
 export function GlobalProvider(props) {
   const [isLoad, setIsLoad] = useState(false);
+  const [user, setUser] = useState(getUser() || null);
+
+  useEffect(() => {
+    saveUser(user);
+  }, [user]);
 
   const handleLoader = (isLoad) => setIsLoad(isLoad);
 
@@ -22,10 +29,14 @@ export function GlobalProvider(props) {
     });
   };
 
+  const handleUser = (user) => setUser(user);
+
   return (
     <GlobalContext.Provider value={{
       handleLoader,
-      handleMessage
+      handleMessage,
+      user,
+      handleUser
     }}>
       {props.children}
 
