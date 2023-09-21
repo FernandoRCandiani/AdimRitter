@@ -14,16 +14,17 @@ import { Certificado } from "../pages/Certificado";
 import { Perfil } from "../pages/Perfil";
 
 import { useGlobal } from "../contexts/Global";
+import { isAuth } from "../services/auth";
 import { Permission } from "../util/Permission";
 
-const PageDashboard = /* Permission() */ Dashboard;
-const PageDashboardCompany = /* Permission() */ DashboardCompany;
-const PageUsuario = /* Permission() */ Usuario;
-const PageEmpresa = /* Permission() */ Empresa;
-const PageRecompensa = /* Permission() */ Recompensa;
-const PageMissao = /* Permission() */ Missao;
-const PageCertificado = /* Permission() */ Certificado;
-const PagePerfil = /* Permission() */ Perfil;
+const PageDashboard = Permission()(Dashboard);
+const PageDashboardCompany = Permission()(DashboardCompany);
+const PageUsuario = Permission()(Usuario);
+const PageEmpresa = Permission()(Empresa);
+const PageRecompensa = Permission()(Recompensa);
+const PageMissao = Permission()(Missao);
+const PageCertificado = Permission()(Certificado);
+const PagePerfil = Permission()(Perfil);
 
 export function Rotas() {
   const location = useLocation();
@@ -45,7 +46,14 @@ export function Rotas() {
         ].join(" ")}
       >
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              isAuth()
+                ? <Navigate to="/dashboard" />
+                : <Login />
+            }
+          />
           <Route path="/missao" element={<PageMissao />} />
           <Route
             path="/dashboard"
