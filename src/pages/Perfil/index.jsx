@@ -6,6 +6,7 @@ import { Modal } from "../../componentes/Modal";
 import { useGlobal } from "../../contexts/Global";
 import { api } from "../../services/api";
 import { signout } from "../../services/auth";
+import { fetchProfile } from "../../services/fetches";
 import { cep, document, phone } from "../../util/mask";
 
 import "./style.css";
@@ -113,7 +114,8 @@ export function Perfil() {
           break;
       }
 
-      handleUser(data);
+      const newUser = await fetchProfile();
+      handleUser(newUser);
     } catch (error) {
       handleMessage("Erro ao editar perfil", "error");
     } finally {
@@ -131,7 +133,6 @@ export function Perfil() {
 
       return signout();
     } catch (error) {
-      console.log(error)
       const data = error?.response?.data;
       handleMessage(data?.message ?? "Erro ao atualizar a senha", "error");
     } finally {
@@ -249,15 +250,7 @@ export function Perfil() {
             </div>
 
             <div className="col">
-              {/* <div className="col"> */}
-              {user?.image
-                ? <></>
-                : <Dropzone onFileUploaded={setSelectedFile} />}
-              {/* <img
-                src={"/EcoVille.png"}
-                className="h-auto w-25"
-                alt="Foto de usuario"
-              /> */}
+              <Dropzone onFileUploaded={setSelectedFile} image={user?.image} />
             </div>
           </div>
 
