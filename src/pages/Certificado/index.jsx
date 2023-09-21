@@ -1,6 +1,6 @@
-import { Tabela } from "../../componentes/Tabela";
 import { Modal } from "../../componentes/Modal";
 import { Paginacao } from "../../componentes/Paginacao";
+import { TabelaCertificado } from "../../componentes/TabelaCertificado";
 
 import "./style.css";
 
@@ -9,7 +9,7 @@ export function Certificado() {
     <>
       <div className="d-flex flex-column gap-2">
         <div className="row align-items-center justify-content-between bg-body-tertiary shadow m-0 p-3">
-          <div className="col-3 h4">Lista das Certificados cadastadas</div>
+          <div className="col-3 h4">Lista dos certificados cadastrados</div>
 
           <div className="col-3 d-flex justify-content-end">
             <button
@@ -50,61 +50,13 @@ export function Certificado() {
                       <th scope="col">Infos</th>
                     </tr>
 
-                    <Tabela
-                      nome={"ESG"}
-                      doc={"Recuperando a foresta"}
-                      certificado
-                    />
-                    <Tabela
-                      nome={"ESG"}
-                      doc={"Recuperando a foresta"}
-                      certificado
-                    />
-                    <Tabela
-                      nome={"ESG"}
-                      doc={"Recuperando a foresta"}
-                      certificado
-                    />
-                    <Tabela
-                      nome={"ESG"}
-                      doc={"Recuperando a foresta"}
-                      certificado
-                    />
-                    <Tabela
-                      nome={"ESG"}
-                      doc={"Recuperando a foresta"}
-                      certificado
-                    />
-                    <Tabela
-                      nome={"ESG"}
-                      doc={"Recuperando a foresta"}
-                      certificado
-                    />
-                    <Tabela
-                      nome={"ESG"}
-                      doc={"Recuperando a foresta"}
-                      certificado
-                    />
-                    <Tabela
-                      nome={"ESG"}
-                      doc={"Recuperando a foresta"}
-                      certificado
-                    />
-                    <Tabela
-                      nome={"ESG"}
-                      doc={"Recuperando a foresta"}
-                      certificado
-                    />
-                    <Tabela
-                      nome={"ESG"}
-                      doc={"Recuperando a foresta"}
-                      certificado
-                    />
-                    <Tabela
-                      nome={"ESG"}
-                      doc={"Recuperando a foresta"}
-                      certificado
-                    />
+                    {Array.from({ length: 10 }).map((_, i) => (
+                      <TabelaCertificado
+                        key={i}
+                        name={`teste ${i + 1}`}
+                        mission={`teste ${i + 1}`}
+                      />
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -121,7 +73,7 @@ export function Certificado() {
       </div>
 
       {/* MODAL DE CADASTRO */}
-      <Modal isOpen={false} onRequestClose={() => {}} title={"Certificado"}>
+      <Modal isOpen={false} onRequestClose={() => { }} title={"Certificado"}>
         <form>
           <div className="row">
             <div className="col mb-3">
@@ -156,7 +108,7 @@ export function Certificado() {
       </Modal>
 
       {/* MODAL DE INFORMAÇÃO */}
-      <Modal isOpen={false} onRequestClose={() => {}} title={"Certificado"}>
+      <Modal isOpen={false} onRequestClose={() => { }} title={"Certificado"}>
         <form>
           <div className="row mb-4 ">
             <div className="col text-start">
