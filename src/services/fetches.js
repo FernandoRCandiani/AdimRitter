@@ -88,4 +88,3 @@ export async function fetchMissions(filter) {
 
   return response.data;
 }
-
