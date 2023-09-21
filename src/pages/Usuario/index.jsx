@@ -74,7 +74,7 @@ export function Usuario() {
 
       if (response.data.erro) {
         handleLoader(false);
-        handleMessage("CEP inválido");
+        handleMessage("CEP inválido", "error");
         return;
       }
 
@@ -96,7 +96,7 @@ export function Usuario() {
         ? districtRef.current?.removeAttribute("disabled")
         : districtRef.current?.setAttribute("disabled", "true");
     } catch (error) {
-      handleMessage("CEP inválido");
+      handleMessage("CEP inválido", "error");
     } finally {
       handleLoader(false);
     }
@@ -133,7 +133,9 @@ export function Usuario() {
       await api.post("/users", formData);
       setFilterUser(INITIAL_FILTER);
       handleMessage("Usuário criado com sucesso", "success");
+      setIsOpenModalRegister(false);
       queryClient.refetchQueries(['users', filterUser]);
+      setRegister(INITIAL_REGISTER);
     } catch (error) {
       handleMessage("Erro ao criar usuário", "error");
     } finally {

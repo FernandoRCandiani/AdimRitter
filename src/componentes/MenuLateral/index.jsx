@@ -33,7 +33,11 @@ export function MenuLateral() {
               </Link>
 
               <Link to="/missao" className={["btn-outline-focus", "p-2", location.pathname === '/missao' ? 'active' : ''].join(" ")}>
-                Missao
+                Missões
+              </Link>
+
+              <Link to="/certificado" className={["btn-outline-focus", "p-2", location.pathname === '/certificado' ? 'active' : ''].join(" ")}>
+                Certificados
               </Link>
             </>
           )}

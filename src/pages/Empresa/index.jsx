@@ -39,22 +39,22 @@ const INITIAL_REGISTER = {
 export function Empresa() {
   const { handleLoader, handleMessage } = useGlobal();
 
-  const [filterUser, setFilterUser] = useState(INITIAL_FILTER);
+  const [filterCompany, setFilterCompany] = useState(INITIAL_FILTER);
   const [search, setSearch] = useState("");
   const [isOpenModalRegister, setIsOpenModalRegister] = useState(false);
   const [register, setRegister] = useState(INITIAL_REGISTER);
   const [selectedFile, setSelectedFile] = useState();
   const [isOpenModalInfo, setIsOpenModalInfo] = useState(false);
-  const [selectedUser, setSelectedUser] = useState();
+  const [selectedCompany, setSelectedCompany] = useState();
 
   const addressRef = useRef();
   const districtRef = useRef();
 
-  const users = useQuery(['users', filterUser], () => fetchUsers(filterUser)).data;
+  const companies = useQuery(['companies', filterCompany], () => fetchUsers(filterCompany)).data;
 
   function goSearch(event) {
     if (event.key === 'Enter') {
-      setFilterUser(prev => ({
+      setFilterCompany(prev => ({
         ...prev,
         name: search
       }));
@@ -62,7 +62,7 @@ export function Empresa() {
   }
 
   function cleanFilter() {
-    setFilterUser(INITIAL_FILTER);
+    setFilterCompany(INITIAL_FILTER);
     setSearch("");
   }
 
@@ -74,7 +74,7 @@ export function Empresa() {
 
       if (response.data.erro) {
         handleLoader(false);
-        handleMessage("CEP inválido");
+        handleMessage("CEP inválido", "error");
         return;
       }
 
@@ -96,7 +96,7 @@ export function Empresa() {
         ? districtRef.current?.removeAttribute("disabled")
         : districtRef.current?.setAttribute("disabled", "true");
     } catch (error) {
-      handleMessage("CEP inválido");
+      handleMessage("CEP inválido", "error");
     } finally {
       handleLoader(false);
     }
@@ -131,9 +131,11 @@ export function Empresa() {
 
     try {
       await api.post("/users", formData);
-      setFilterUser(INITIAL_FILTER);
+      setFilterCompany(INITIAL_FILTER);
       handleMessage("Usuário criado com sucesso", "success");
-      queryClient.refetchQueries(['users', filterUser]);
+      setIsOpenModalRegister(false);
+      queryClient.refetchQueries(['companies', filterCompany]);
+      setRegister(INITIAL_REGISTER);
     } catch (error) {
       handleMessage("Erro ao criar usuário", "error");
     } finally {
@@ -143,7 +145,7 @@ export function Empresa() {
 
   async function getInfoUser(id) {
     const response = await api.get(`/users/${id}`);
-    setSelectedUser(response.data);
+    setSelectedCompany(response.data);
     setIsOpenModalInfo(true);
   }
 
@@ -180,12 +182,12 @@ export function Empresa() {
                       onChange={e => setSearch(e.target.value)}
                       onKeyDown={goSearch}
                     />
-                    {filterUser.name && (
+                    {filterCompany.name && (
                       <button className="btn" onClick={cleanFilter}>
                         <FaTimes />
                       </button>
                     )}
-                    <button className="btn btn-outline-success" onClick={() => setFilterUser(prev => ({ ...prev, name: search }))}>
+                    <button className="btn btn-outline-success" onClick={() => setFilterCompany(prev => ({ ...prev, name: search }))}>
                       Buscar
                     </button>
                   </div>
@@ -203,11 +205,11 @@ export function Empresa() {
                       <th scope="col">Infos</th>
                     </tr>
 
-                    {users?.data?.map(user => (
+                    {companies?.data?.map(company => (
                       <Tabela
-                        key={user.id}
-                        info={() => getInfoUser(user.id)}
-                        {...user}
+                        key={company.id}
+                        info={() => getInfoUser(company.id)}
+                        {...company}
                       />
                     ))}
                   </tbody>
@@ -217,13 +219,13 @@ export function Empresa() {
 
             <div className="row align-items-center justify-content-between">
               <div className="col-3">
-                {users?.totalItems} usuários cadastrados
+                {companies?.totalItems} usuários cadastrados
               </div>
               <div className="col-3 d-flex justify-content-end">
                 <Paginacao
-                  current={filterUser?.page}
-                  totalPages={users?.totalPages}
-                  setCurrent={page => setFilterUser(prev => ({ ...prev, page }))}
+                  current={filterCompany?.page}
+                  totalPages={companies?.totalPages}
+                  setCurrent={page => setFilterCompany(prev => ({ ...prev, page }))}
                 />
               </div>
             </div>
@@ -416,29 +418,29 @@ export function Empresa() {
         <div className="row mb-4 ">
           <div className="col text-start">
             <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-              Nome: {selectedUser?.name}
+              Nome: {selectedCompany?.name}
             </div>
 
             <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-              Email: {selectedUser?.email}
+              Email: {selectedCompany?.email}
             </div>
 
             <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-              CPF: {document(selectedUser?.document)}
+              CPF: {document(selectedCompany?.document)}
             </div>
 
             <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-              Telefone: {phone(selectedUser?.phone)}
+              Telefone: {phone(selectedCompany?.phone)}
             </div>
 
             <div className="border-bottom border-light-subtle fw-medium p-2">
-              Sexo: {selectedUser?.gender}
+              Sexo: {selectedCompany?.gender}
             </div>
           </div>
 
           <div className="col text-center d-flex justify-content-center align-items-center">
             <img
-              src={selectedUser?.image ?? "/EcoVille.png"}
+              src={selectedCompany?.image ?? "/EcoVille.png"}
               className="h-auto w-50"
               alt="Foto de usuario"
             />
@@ -447,33 +449,33 @@ export function Empresa() {
 
         <div className="row mb-4">
           <div className="col border-bottom border-light-subtle fw-medium ms-3 me-3 p-2">
-            CEP: {cep(selectedUser?.cep)}
+            CEP: {cep(selectedCompany?.cep)}
           </div>
 
           <div className="col border-bottom border-light-subtle fw-medium ms-3 me-3 p-2">
-            Endereço: {selectedUser?.address}
+            Endereço: {selectedCompany?.address}
           </div>
         </div>
 
         <div className="row mb-4">
           <div className="col border-bottom border-light-subtle fw-medium ms-3 me-3 p-2">
-            Bairro: {selectedUser?.district}
+            Bairro: {selectedCompany?.district}
           </div>
 
-          {selectedUser?.complement && (
+          {selectedCompany?.complement && (
             <div className="col border-bottom border-light-subtle fw-medium ms-3 me-3 p-2">
-              Complemento: {selectedUser?.complement}
+              Complemento: {selectedCompany?.complement}
             </div>
           )}
         </div>
 
         <div className="row mb-4">
           <div className="col border-bottom border-light-subtle fw-medium ms-3 me-3 p-2">
-            Cidade: {selectedUser?.city}
+            Cidade: {selectedCompany?.city}
           </div>
 
           <div className="col border-bottom border-light-subtle fw-medium ms-3 me-3 p-2">
-            Estado: {selectedUser?.uf}
+            Estado: {selectedCompany?.uf}
           </div>
         </div>
       </Modal>

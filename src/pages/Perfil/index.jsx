@@ -104,7 +104,6 @@ export function Perfil() {
 
     try {
       await api.patch("/users", formData);
-      handleMessage("Perfil atualizado com sucesso", "success");
 
       switch (true) {
         case data.email !== user.email:
@@ -113,6 +112,8 @@ export function Perfil() {
         default:
           break;
       }
+
+      handleMessage("Perfil atualizado com sucesso", "success");
 
       const newUser = await fetchProfile();
       handleUser(newUser);

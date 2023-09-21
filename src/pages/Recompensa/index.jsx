@@ -81,7 +81,9 @@ export function Recompensa() {
 
       setFilterPrize(INITIAL_FILTER);
       handleMessage("Recompensa cadastrada com sucesso!", "success");
+      setIsOpenModalRegister(false);
       queryClient.refetchQueries(["prizes", filterPrize]);
+      setRegister(INITIAL_REGISTER);
     } catch (error) {
       const data = error?.response?.data;
       handleMessage(data?.message ?? "Erro ao cadastrar recompensa");

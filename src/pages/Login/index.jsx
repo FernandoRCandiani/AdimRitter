@@ -39,7 +39,7 @@ export function Login() {
 
       if (response.data.role === ROLE.EMPLOYEES) {
         handleLoader(false);
-        return handleMessage("Você não tem acesso", 'error');
+        return handleMessage("Acesso negado", 'error');
       }
 
       setToken(response.data.token);
@@ -52,7 +52,7 @@ export function Login() {
       return window.location.assign("/dashboard");
     } catch (error) {
       const data = error?.response?.data;
-      return handleMessage(data.message, 'error');
+      return handleMessage(data?.message ?? "Erro ao efetuar login", 'error');
     } finally {
       handleLoader(false);
     }
@@ -73,7 +73,7 @@ export function Login() {
       changeForm('login');
     } catch (error) {
       const data = error?.response?.data;
-      return handleMessage(data.message, 'error');
+      return handleMessage(data?.message ?? "Erro ao redefinir senha", 'error');
     } finally {
       handleLoader(false);
     }
