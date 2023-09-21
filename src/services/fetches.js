@@ -15,7 +15,7 @@ export async function fetchAvgMissionGeneral(group) {
 }
 
 export async function fetchAvgTroubleCompanies(group) {
-  const response = await api.get('/usertroubles/report-companies', {
+  const response = await api.get('/userlocaletroubles/report-companies', {
     params: { group }
   });
 
@@ -41,7 +41,7 @@ export async function fetchUserCertificatesCompany() {
 }
 
 export async function fetchTroubleCompanies() {
-  const response = await api.get('/usertroubles/report-employees');
+  const response = await api.get('/userlocaletroubles/report-employees');
 
   return response.data;
 }
