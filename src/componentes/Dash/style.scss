@@ -2,10 +2,14 @@
   display: flex;
   gap: 1rem;
   flex-direction: column;
-  width: calc(50% - 1rem);
   box-shadow: 0 8px 8px rgba(0, 0, 0, 0.3);
   background: #fff;
   border-radius: 0.25rem;
+  width: 100%;
+
+  @media (min-width: 1500px) {
+    width: calc(50% - 1rem);
+  }
 
   &-card {
     display: flex;
@@ -35,7 +39,7 @@
 
         &-label {
           font-size: 1rem;
-          text-wrap: nowrap;
+          white-space: nowrap;
         }
       }
     }
