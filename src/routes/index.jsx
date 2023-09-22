@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Navigate, Routes, Route, useLocation } from "react-router-dom";
 
 import { MenuSuperior } from "../componentes/MenuSuperior";
 import { MenuLateral } from "../componentes/MenuLateral";
