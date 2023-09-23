@@ -78,7 +78,19 @@ export async function fetchPrizes(filter) {
 }
 
 export async function fetchMissions(filter) {
-  const response = await api.get('/missions', {
+  const response = await api.get('/quizzes', {
+    params: {
+      limit: 10,
+      page: filter.page ?? 0,
+      name: filter.name || undefined
+    }
+  });
+
+  return response.data;
+}
+
+export async function fetchCertificates(filter) {
+  const response = await api.get('/certificates', {
     params: {
       limit: 10,
       page: filter.page ?? 0,
