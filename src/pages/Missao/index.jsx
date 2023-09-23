@@ -118,9 +118,17 @@ export function Missao() {
             </div>
 
             <div className="row align-items-center justify-content-between">
-              <div className="col-3">50 missões cadastradas</div>
+              <div className="col-3">
+                {missions?.totalItems} missões cadastradas
+              </div>
               <div className="col-3 d-flex justify-content-end">
-                <Paginacao />
+                <Paginacao
+                  current={filterMission?.page}
+                  totalPages={missions?.totalPages}
+                  setCurrent={(page) =>
+                    setFilterMission((prev) => ({ ...prev, page }))
+                  }
+                />
               </div>
             </div>
           </div>

@@ -8,7 +8,10 @@ import { TabelaCertificado } from "../../componentes/TabelaCertificado";
 
 import { useGlobal } from "../../contexts/Global";
 import { api } from "../../services/api";
-import { fetchCertificates } from "../../services/fetches";
+import {
+  fetchCertificates,
+  fetchMissionWithoutCertificate,
+} from "../../services/fetches";
 
 import "./style.css";
 
@@ -32,6 +35,11 @@ export function Certificado() {
   const [isOpenModalInfo, setIsOpenModalInfo] = useState(false);
 
   const { handleLoader, handleMessage } = useGlobal();
+
+  const missionWithoutCertificate = useQuery(
+    "missionWithoutCertificate",
+    fetchMissionWithoutCertificate
+  ).data;
 
   const certificates = useQuery(["certificate", filterCertificate], () =>
     fetchCertificates(filterCertificate)
@@ -193,23 +201,6 @@ export function Certificado() {
               <select
                 className="form-select"
                 aria-label="Default select example"
-                name="categoryId"
-                value={register.categoryId}
-                onChange={onChange}
-              >
-                <option value="" disabled>
-                  Categoria
-                </option>
-                <option value="1">Aeropaortuária</option>
-                <option value="2">Incêndio</option>
-                <option value="3">Coleta residual</option>
-              </select>
-            </div>
-
-            <div className="col">
-              <select
-                className="form-select"
-                aria-label="Default select example"
                 name="quizId"
                 value={register.quizId}
                 onChange={onChange}
@@ -217,9 +208,14 @@ export function Certificado() {
                 <option value="" disabled>
                   Missão
                 </option>
-                <option value="1">Aeropaortuária</option>
-                <option value="2">Incêndio</option>
-                <option value="3">Coleta residual</option>
+                {missionWithoutCertificate?.map((missionWithoutCertificate) => (
+                  <option
+                    value={missionWithoutCertificate.id}
+                    key={missionWithoutCertificate.id}
+                  >
+                    {missionWithoutCertificate.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

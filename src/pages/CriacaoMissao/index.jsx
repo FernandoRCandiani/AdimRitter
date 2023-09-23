@@ -5,12 +5,16 @@ import { Link } from "react-router-dom";
 import { MdPlaylistAdd } from "react-icons/md";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import { useGlobal } from "../../contexts/Global";
+import { showCategoryName } from "../../util";
 
 import "./style.css";
 
 export function CriacaoMissao() {
   const [register, setRegister] = useState({});
   const [expandQuestion, setExpandQuestion] = useState(false);
+
+  const { handleLoader, handleMessage, categories } = useGlobal();
 
   const today = startOfToday();
 
@@ -87,9 +91,11 @@ export function CriacaoMissao() {
                     <option value="" disabled>
                       Categoria
                     </option>
-                    <option value="1">Aeropaortuária</option>
-                    <option value="2">Incêndio</option>
-                    <option value="3">Coleta residual</option>
+                    {categories?.map((category) => (
+                      <option value={category.id} key={category.id}>
+                        {showCategoryName(category?.name)}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

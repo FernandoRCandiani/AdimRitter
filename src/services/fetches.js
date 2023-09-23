@@ -100,3 +100,15 @@ export async function fetchCertificates(filter) {
 
   return response.data;
 }
+
+export async function fetchCategories() {
+  const response = await api.get('/categories');
+
+  return response.data;
+}
+
+export async function fetchMissionWithoutCertificate() {
+  const response = await api.get('/quizzes/certificate');
+
+  return response.data;
+}

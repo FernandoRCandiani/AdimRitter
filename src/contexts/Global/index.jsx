@@ -5,6 +5,8 @@ import toast, { Toaster } from "react-hot-toast";
 import { getUser, setUser as saveUser } from '../../services/auth';
 
 import './style.css';
+import { useQuery } from "react-query";
+import { fetchCategories } from "../../services/fetches";
 
 export const GlobalContext = createContext({});
 
@@ -13,6 +15,8 @@ export const useGlobal = () => useContext(GlobalContext);
 export function GlobalProvider(props) {
   const [isLoad, setIsLoad] = useState(false);
   const [user, setUser] = useState(getUser() || null);
+
+  const categories = useQuery("categories", fetchCategories).data;
 
   useEffect(() => {
     saveUser(user);
@@ -36,7 +40,8 @@ export function GlobalProvider(props) {
       handleLoader,
       handleMessage,
       user,
-      handleUser
+      handleUser,
+      categories
     }}>
       {props.children}
 

@@ -5,6 +5,11 @@ import { GlobalProvider } from "./contexts/Global";
 import { Rotas } from "./routes";
 import { queryClient } from "./services/queryClient";
 
+import { setDefaultOptions } from "date-fns";
+import { ptBR } from "date-fns/locale";
+
+setDefaultOptions({locale: ptBR}) 
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>

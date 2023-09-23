@@ -1,20 +1,20 @@
 export function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, (ms ?? 500)));
+  return new Promise((resolve) => setTimeout(resolve, ms ?? 500));
 }
 
 export function showRarity(value) {
   switch (value) {
-    case 'UNCOMMON':
+    case "UNCOMMON":
       return "Incomum";
-    case 'EPIC':
+    case "EPIC":
       return "Épico";
-    case 'RARE':
+    case "RARE":
       return "Raro";
-    case 'LENDARY':
+    case "LENDARY":
       return "Lendário";
-    case 'LIMITED':
+    case "LIMITED":
       return "Limitado";
-    case 'COMMON':
+    case "COMMON":
     default:
       return "Comum";
   }
@@ -22,10 +22,21 @@ export function showRarity(value) {
 
 export function showTypePrize(value) {
   switch (value) {
-    case 'PHYSICAL':
+    case "PHYSICAL":
       return "Físico";
-    case 'VIRTUAL':
+    case "VIRTUAL":
     default:
       return "Virtual";
+  }
+}
+
+export function showCategoryName(category) {
+  switch (category) {
+    case "fire":
+      return "Incêndio";
+    case "airport":
+      return "Aeroportuária";
+    case "residual":
+      return "Coleta Residual";
   }
 }
