@@ -1,8 +1,7 @@
-import { addDays, format, startOfToday } from 'date-fns';
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import { MdPlaylistAdd } from "react-icons/md";
-import { useQuery } from 'react-query';
+import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
 
 import { Modal } from "../../componentes/Modal";
 import { Paginacao } from "../../componentes/Paginacao";
@@ -12,21 +11,20 @@ import { fetchMissions } from "../../services/fetches";
 
 import "./style.css";
 
+import "bootstrap/js/dist/collapse";
+
 const INITIAL_FILTER = {
   page: 0,
-  name: ""
+  name: "",
 };
-
 
 export function Missao() {
   const [filterMission, setFilterMission] = useState(INITIAL_FILTER);
   const [search, setSearch] = useState("");
-  const [register, setRegister] = useState({});
-  const [isOpenModalRegister, setIsOpenModalRegister] = useState(false);
 
-  const missions = useQuery(["missions", filterMission], () => fetchMissions(filterMission)).data;
-
-  const today = startOfToday();
+  const missions = useQuery(["missions", filterMission], () =>
+    fetchMissions(filterMission)
+  ).data;
 
   function cleanFilter() {
     setFilterMission(INITIAL_FILTER);
@@ -34,19 +32,12 @@ export function Missao() {
   }
 
   function onSearch(event) {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       setFilterMission((parameter) => ({
         ...parameter,
         name: search,
       }));
     }
-  }
-
-  function onChange(event) {
-    setRegister((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }));
   }
 
   return (
@@ -56,14 +47,19 @@ export function Missao() {
           <div className="col-3 h4">Lista das Missões cadastadas</div>
 
           <div className="col-3 d-flex justify-content-end">
-            <button
-              type="button"
-              className="d-flex btn btn-primary align-items-center"
-              onClick={() => setIsOpenModalRegister(true)}
+            <Link
+              to="/criacaoMissao"
+              className={[
+                "d-flex",
+                "btn",
+                "btn-primary",
+                "align-items-center",
+                "/criacaoMissao",
+              ].join(" ")}
             >
               <img src="./plus-circle.svg" alt="" className="pe-2" />
               Cadastrar Missões
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -131,157 +127,8 @@ export function Missao() {
         </div>
       </div>
 
-      {/* MODAL DE CADASTRO */}
-      <Modal isOpen={isOpenModalRegister} onRequestClose={() => setIsOpenModalRegister(false)} title={"Missões"}>
-        {/* CRIAR MISSÃO */}
-        <form>
-          <div className="h5 mb-2">Formulário para criação de missão</div>
-
-          <div className="row">
-            <div className="col mb-3">
-              <input
-                type="text"
-                className="form-control"
-                id="nome"
-                aria-describedby="nomeHelp"
-                placeholder="Nome da missão"
-                name="name"
-                value={register.name}
-                onChange={onChange}
-              />
-            </div>
-
-            <div className="col mb-3">
-              <input
-                type="date"
-                className="form-control"
-                id="data"
-                aria-describedby="datalHelp"
-                placeholder="Data da missão"
-                min={format(addDays(today, 2), "yyyy'-'MM'-'dd")}
-                max="9999-12-31"
-                name="startsAt"
-                value={register.startsAt}
-                onChange={onChange}
-              />
-            </div>
-
-            <div className="col">
-              <select
-                className="form-select"
-                aria-label="Default select example"
-                name="categoryId"
-                value={register.categoryId}
-                onChange={onChange}
-              >
-                <option value="" disabled>Categoria</option>
-                <option value="1">Aeropaortuária</option>
-                <option value="2">Incêndio</option>
-                <option value="3">Coleta residual</option>
-              </select>
-            </div>
-          </div>
-
-          {/* CRIAR PERGUNTA */}
-          <div className="h5 mb-2">Formulário para criação de pergunta</div>
-
-          <div className="row">
-            <div className="col mb-3">
-              <textarea
-                type="text"
-                className="form-control"
-                id="pergunta"
-                aria-describedby="nomeHelp"
-                placeholder="Pergunta"
-              />
-            </div>
-
-            <div className="col mb-3">
-              <textarea
-                type="text"
-                className="form-control"
-                id="descricao"
-                aria-describedby="datalHelp"
-                placeholder="Descricao"
-              />
-            </div>
-          </div>
-
-          {/* CRIAR RESPOSTAS */}
-          <div className="h5 mb-2">Formulário para criação de respostas</div>
-
-          <div className="row grid g-3 mb-2">
-            <div className="col-2 me-3 mb-3 border-bottom border-light-subtle fw-medium p-2">
-              Selecione correta
-            </div>
-
-            <div className="col me-3 mb-3 border-bottom border-light-subtle fw-medium p-2">
-              Adicionar as resposta em ordem aleatória
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-2 mb-3 d-flex justify-content-center">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="radioNoLabel"
-                id="respostaCorreta1"
-              />
-            </div>
-
-            <div className="col mb-3">
-              <textarea
-                type="text"
-                className="form-control"
-                for="respostaCorreta1"
-                id="resposta"
-                aria-describedby="nomeHelp"
-                placeholder="Resposta"
-              />
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-2 mb-3 d-flex justify-content-center">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="radioNoLabel"
-                id="respostaCorreta2"
-              />
-            </div>
-
-            <div className="col mb-3">
-              <textarea
-                type="text"
-                className="form-control"
-                for="respostaCorreta2"
-                id="resposta"
-                aria-describedby="nomeHelp"
-                placeholder="Resposta"
-              />
-            </div>
-          </div>
-
-          <div className="row justify-content-end">
-            <div className="col-2 mb-3">
-              <button type="submit" className="btn btn-primary w-100">
-                <MdPlaylistAdd /> Respostas
-              </button>
-            </div>
-          </div>
-
-          <div className="col-2 mb-3">
-            <button type="submit" className="btn btn-primary w-100">
-              Criar
-            </button>
-          </div>
-        </form>
-      </Modal>
-
       {/* MODAL DE INFORMAÇÃO */}
-      <Modal isOpen={false} onRequestClose={() => { }} title={"Missão"}>
+      <Modal isOpen={false} onRequestClose={() => {}} title={"Missão"}>
         <form>
           <div className="row mb-4 ">
             <div className="h5 mb-2">Sobre missão</div>
