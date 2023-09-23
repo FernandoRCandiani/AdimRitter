@@ -4,7 +4,7 @@ export function TabelaCertificado(props) {
   return (
     <tr>
       <td>{props.title}</td>
-      <td>{props.quiz.name}</td>
+      <td>{props?.quiz?.name}</td>
       <td>
         <img
           src="./info-circle.svg"
