@@ -1,18 +1,35 @@
 import { addDays, format, startOfToday } from "date-fns";
 import { useState } from "react";
+import { AiOutlineArrowLeft } from "react-icons/ai";
+import { FaTrash } from "react-icons/fa";
+import { IoIosArrowDown } from "react-icons/io";
+import { MdPlaylistAdd } from "react-icons/md";
 import { Link } from "react-router-dom";
 
-import { MdPlaylistAdd } from "react-icons/md";
-import { AiOutlineArrowLeft } from "react-icons/ai";
-import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { useGlobal } from "../../contexts/Global";
 import { showCategoryName } from "../../util";
 
 import "./style.css";
 
+const INITIAL_REGISTER = {
+  name: "",
+  startsAt: "",
+  categoryId: "",
+  questions: []
+};
+
+const INITIAL_QUESTIONS = {
+  title: "",
+  answers: []
+};
+
+const INITIAL_ANSWERS = {
+  value: "",
+  isCorrect: false
+};
+
 export function CriacaoMissao() {
-  const [register, setRegister] = useState({});
-  const [expandQuestion, setExpandQuestion] = useState(false);
+  const [register, setRegister] = useState(INITIAL_REGISTER);
 
   const { handleLoader, handleMessage, categories } = useGlobal();
 
@@ -25,8 +42,37 @@ export function CriacaoMissao() {
     }));
   }
 
-  function onExpandQuestion() {
-    setExpandQuestion(!expandQuestion);
+  function addQuestion() {
+    setRegister(prev => ({
+      ...prev,
+      questions: [
+        ...prev.questions,
+        { ...INITIAL_QUESTIONS }
+      ]
+    }));
+  }
+
+  function addAnswer(indexQuestion) {
+    const questions = [...register.questions];
+
+    questions[indexQuestion].answers = [
+      ...questions[indexQuestion].answers,
+      { ...INITIAL_ANSWERS }
+    ];
+
+    setRegister(prev => ({
+      ...prev,
+      questions
+    }));
+  }
+
+  function removeQuestion(question) {
+    const questions = register.questions.filter(q => q !== question);
+
+    setRegister(prev => ({
+      ...prev,
+      questions
+    }));
   }
 
   return (
@@ -41,13 +87,12 @@ export function CriacaoMissao() {
             Voltar
           </div>
         </Link>
-
         <div className="col text-center h3 m-0">Criar Missão</div>
       </div>
+
       <div className="d-flex flex-column gap-2">
         <div className="m-0">
           <div className="bg-body-tertiary p-3">
-            {/* CRIAR MISSÃO */}
             <form>
               <div className="h5 mb-2">Formulário para criação de missão</div>
 
@@ -100,132 +145,106 @@ export function CriacaoMissao() {
                 </div>
               </div>
 
-              {/* CRIAR PERGUNTA */}
-              <div className="h5 mb-2">Criação de pergunta</div>
-              <div className="row justify-content-start">
-                <div className="col-2 mb-3">
-                  <button type="button" className="btn btn-primary w-100">
-                    <MdPlaylistAdd /> Criar Pergunta
-                  </button>
-                </div>
-              </div>
-              <div>
-                <p>
-                  <button
-                    className="btn btn-primary"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapseExample"
-                    aria-expanded="false"
-                    aria-controls="collapseExample"
-                    onClick={onExpandQuestion}
-                  >
-                    <div className="d-flex align-items-center gap-2">
-                      Pergunta
-                      {expandQuestion ? <IoIosArrowUp /> : <IoIosArrowDown />}
-                    </div>
-                  </button>
-                </p>
-                <div className="collapse" id="collapseExample">
-                  <div className="row">
-                    <div className="col mb-3">
-                      <textarea
-                        type="text"
-                        className="form-control"
-                        id="pergunta"
-                        aria-describedby="nomeHelp"
-                        placeholder="Pergunta"
-                      />
+              <div className="accordion questions" id="accordionQuiz">
+                {register.questions.map((question, idxQuestion) => (
+                  <div key={idxQuestion} className="accordion-item">
+                    <div className="accordion-header questions-header">
+                      <div
+                        className="h3"
+                        data-bs-toggle="collapse"
+                        data-bs-target={`#question-${idxQuestion}`}
+                        aria-expanded="false"
+                        aria-controls={`question-${idxQuestion}`}
+                      >
+                        Pergunta {idxQuestion + 1}
+                        <IoIosArrowDown />
+                      </div>
+
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={() => removeQuestion(question)}
+                      >
+                        <FaTrash />
+                      </button>
                     </div>
 
-                    <div className="col mb-3">
-                      <textarea
-                        type="text"
-                        className="form-control"
-                        id="descricao"
-                        aria-describedby="datalHelp"
-                        placeholder="Descricao"
-                      />
-                    </div>
-                  </div>
+                    <div
+                      className="accordion-collapse collapse questions-body"
+                      id={`question-${idxQuestion}`}
+                      data-bs-parent="#accordionQuiz"
+                    >
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Pergunta
+                        </label>
+                        <input type="text" className="form-control" placeholder="Digite a pergunta"
+                          name="title"
+                          value={question.title}
+                          onChange={e => {
+                            question.title = e.target.value;
+                            setRegister({ ...register });
+                          }}
+                        />
+                      </div>
 
-                  {/* CRIAR RESPOSTAS */}
-                  <div className="h5 mb-2">
-                    Formulário para criação de respostas
-                  </div>
+                      <div className="h4">Respostas</div>
 
-                  <div className="row grid g-3 mb-2">
-                    <div className="col-2 me-3 mb-3 border-bottom border-light-subtle fw-medium p-2">
-                      Selecione correta
-                    </div>
+                      {question.answers.map((answer, idxAnswer) => (
+                        <div key={idxAnswer} className="row mb-3 align-items-center">
+                          <div className="col-3">
+                            <div className="form-check">
+                              <input className="form-check-input" type="radio" id={`radio-${idxQuestion}-${idxAnswer}`}
+                                name={`correct-answer-${idxQuestion}`}
+                              />
+                              <label className="form-check-label" htmlFor={`radio-${idxQuestion}-${idxAnswer}`}>
+                                Resposta correta
+                              </label>
+                            </div>
+                          </div>
+                          <div className="col">
+                            <input className="form-control" type="text" placeholder="Digite a resposta"
+                              name="value"
+                              value={answer.value}
+                              onChange={e => {
+                                answer.value = e.target.value;
+                                setRegister({ ...register });
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))}
 
-                    <div className="col me-3 mb-3 border-bottom border-light-subtle fw-medium p-2">
-                      Adicionar as resposta em ordem aleatória
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-2 mb-3 d-flex justify-content-center">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="radioNoLabel"
-                        id="respostaCorreta1"
-                      />
-                    </div>
-
-                    <div className="col mb-3">
-                      <textarea
-                        type="text"
-                        className="form-control"
-                        // for="respostaCorreta1"
-                        id="resposta"
-                        aria-describedby="nomeHelp"
-                        placeholder="Resposta"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-2 mb-3 d-flex justify-content-center">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="radioNoLabel"
-                        id="respostaCorreta2"
-                      />
-                    </div>
-
-                    <div className="col mb-3">
-                      <textarea
-                        type="text"
-                        className="form-control"
-                        // for="respostaCorreta2"
-                        id="resposta"
-                        aria-describedby="nomeHelp"
-                        placeholder="Resposta"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="row justify-content-end">
-                    <div className="col-2 mb-3">
-                      <button type="button" className="btn btn-primary w-100">
-                        <MdPlaylistAdd /> Respostas
+                      <button
+                        className="btn btn-primary d-flex align-items-center gap-2 mb-3"
+                        type="button"
+                        onClick={() => addAnswer(idxQuestion)}
+                        disabled={question?.answers?.length === 3 || !question?.title}
+                      >
+                        <MdPlaylistAdd />
+                        Adicionar resposta
                       </button>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
 
-              <div className="row justify-content-end">
-                <div className="col-2 mb-3">
+              <button
+                className="btn btn-primary d-flex align-items-center gap-2"
+                type="button"
+                onClick={addQuestion}
+              >
+                <MdPlaylistAdd />
+                Adicionar pergunta
+              </button>
+
+              <div className="row mt-4">
+                <div className="col">
                   <button
-                    type="submit"
-                    className="btn btn-primary w-100"
-                    disabled
+                    className="btn btn-primary"
+                    disabled={register.questions.length < 5}
                   >
-                    Criar Missão
+                    Criar missão
                   </button>
                 </div>
               </div>
