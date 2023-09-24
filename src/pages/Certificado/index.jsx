@@ -8,10 +8,8 @@ import { TabelaCertificado } from "../../componentes/TabelaCertificado";
 
 import { useGlobal } from "../../contexts/Global";
 import { api } from "../../services/api";
-import {
-  fetchCertificates,
-  fetchMissionWithoutCertificate,
-} from "../../services/fetches";
+import { fetchCertificates, fetchMissionWithoutCertificate, } from "../../services/fetches";
+import { queryClient } from "../../services/queryClient";
 
 import "./style.css";
 
@@ -22,7 +20,6 @@ const INITIAL_FILTER = {
 
 const INITIAL_REGISTER = {
   title: "",
-  categoryId: "",
   quizId: "",
 };
 
@@ -51,7 +48,7 @@ export function Certificado() {
   }
 
   function onSearch(event) {
-    if (event.key == "Enter") {
+    if (event.key === "Enter") {
       setFilterCertificate((prev) => ({
         ...prev,
         title: search,
@@ -70,7 +67,24 @@ export function Certificado() {
     event.preventDefault();
 
     handleLoader(true);
-    handleLoader(false);
+
+    try {
+      await api.post('/certificates', {
+        ...register,
+        quizId: register.quizId || null
+      });
+
+      setFilterCertificate(INITIAL_FILTER);
+      handleMessage("Certificado criado com sucesso", "success");
+      setIsOpenModalRegister(false);
+      queryClient.refetchQueries(["certificate", filterCertificate]);
+      setRegister(INITIAL_REGISTER);
+    } catch (error) {
+      const data = error?.response?.data;
+      handleMessage(data?.message ?? "Erro ao cadastrar certificado", "error");
+    } finally {
+      handleLoader(false);
+    }
   }
 
   async function getInfoCertificate(id) {
@@ -180,7 +194,7 @@ export function Certificado() {
       <Modal
         isOpen={isOpenModalRegister}
         onRequestClose={() => setIsOpenModalRegister(false)}
-        title={"Certificado"}
+        title={"Cadastrar Certificado"}
       >
         <form onSubmit={handleRegister}>
           <div className="row">
@@ -221,7 +235,7 @@ export function Certificado() {
           </div>
 
           <div className="col-2 mb-3">
-            <button type="submit" className="btn btn-primary w-100">
+            <button type="submit" className="btn btn-primary w-100" disabled={!register.title}>
               Criar
             </button>
           </div>

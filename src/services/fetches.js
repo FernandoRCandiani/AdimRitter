@@ -94,7 +94,7 @@ export async function fetchCertificates(filter) {
     params: {
       limit: 10,
       page: filter.page ?? 0,
-      name: filter.name || undefined
+      title: filter.title || undefined
     }
   });
 

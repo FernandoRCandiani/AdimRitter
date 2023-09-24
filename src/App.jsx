@@ -1,3 +1,5 @@
+import { setDefaultOptions } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { QueryClientProvider } from "react-query";
 import { BrowserRouter } from "react-router-dom";
 
@@ -5,10 +7,7 @@ import { GlobalProvider } from "./contexts/Global";
 import { Rotas } from "./routes";
 import { queryClient } from "./services/queryClient";
 
-import { setDefaultOptions } from "date-fns";
-import { ptBR } from "date-fns/locale";
-
-setDefaultOptions({locale: ptBR}) 
+setDefaultOptions({ locale: ptBR });
 
 function App() {
   return (
