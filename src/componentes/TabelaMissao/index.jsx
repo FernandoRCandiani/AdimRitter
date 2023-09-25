@@ -9,7 +9,7 @@ export function TabelaMissao(props) {
       <td>{format(parseISO(String(props.startsAt)), "dd'/'MM'/'yyyy")}</td>
       <td>{showCategoryName(props.category?.name)}</td>
       <td>
-        <img src="./info-circle.svg" alt="" className="pe-2" />
+        <img src="./info-circle.svg" alt="" className="pe-2" onClick={props.info} />
       </td>
     </tr>
   );

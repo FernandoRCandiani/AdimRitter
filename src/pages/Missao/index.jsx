@@ -1,5 +1,6 @@
+import { format, parseISO } from "date-fns";
 import { useState } from "react";
-import { FaTimes } from "react-icons/fa";
+import { FaCheck, FaTimes } from "react-icons/fa";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 
@@ -7,7 +8,9 @@ import { Modal } from "../../componentes/Modal";
 import { Paginacao } from "../../componentes/Paginacao";
 import { TabelaMissao } from "../../componentes/TabelaMissao";
 
+import { api } from "../../services/api";
 import { fetchMissions } from "../../services/fetches";
+import { showCategoryName } from "../../util";
 
 import "./style.css";
 
@@ -21,6 +24,8 @@ const INITIAL_FILTER = {
 export function Missao() {
   const [filterMission, setFilterMission] = useState(INITIAL_FILTER);
   const [search, setSearch] = useState("");
+  const [isOpenModalInfo, setIsOpenModalInfo] = useState(false);
+  const [selectedMission, setSelectedMission] = useState();
 
   const missions = useQuery(["missions", filterMission], () =>
     fetchMissions(filterMission)
@@ -38,6 +43,12 @@ export function Missao() {
         name: search,
       }));
     }
+  }
+
+  async function getInfoMission(id) {
+    const response = await api.get(`/quizzes/${id}`);
+    setSelectedMission(response.data);
+    setIsOpenModalInfo(true);
   }
 
   return (
@@ -110,7 +121,11 @@ export function Missao() {
                     </tr>
 
                     {missions?.data?.map((mission) => (
-                      <TabelaMissao key={mission.id} {...mission} />
+                      <TabelaMissao
+                        key={mission.id}
+                        info={() => getInfoMission(mission.id)}
+                        {...mission}
+                      />
                     ))}
                   </tbody>
                 </table>
@@ -136,88 +151,49 @@ export function Missao() {
       </div>
 
       {/* MODAL DE INFORMAÇÃO */}
-      <Modal isOpen={false} onRequestClose={() => {}} title={"Missão"}>
-        <form>
-          <div className="row mb-4 ">
-            <div className="h5 mb-2">Sobre missão</div>
+      <Modal isOpen={isOpenModalInfo} onRequestClose={() => setIsOpenModalInfo(false)} title={"Missão"}>
+        <div className="row mb-4 border-bottom">
+          <div className="h5 mb-2">Sobre missão</div>
 
-            <div className="col text-start">
-              <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-                Nome: Fogo
-              </div>
-            </div>
-
-            <div className="col text-start">
-              <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-                Data: 16/09/2023
-              </div>
-            </div>
-
-            <div className="col text-start">
-              <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-                Categoria: Incêndio
-              </div>
+          <div className="col text-start">
+            <div className="mb-3 fw-medium p-2">
+              Nome: {selectedMission?.name}
             </div>
           </div>
 
-          <div className="row mb-4 ">
-            <div className="h5 mb-2">Sobre Pergunta</div>
-
-            <div className="col text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Pergunta: <br />
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugiat
-                earum nemo aperiam nam amet aliquam aspernatur error doloribus
-                repudiandae sunt?
-              </div>
-            </div>
-
-            <div className="col text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Descrição: <br /> Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Illo omnis corporis fugiat optio rerum quasi
-                magni, labore tempore incidunt saepe deleniti doloremque. Quae,
-                sit ab.
-              </div>
+          <div className="col text-start">
+            <div className="mb-3 fw-medium p-2">
+              Data: {selectedMission?.startsAt && format(parseISO(String(selectedMission?.startsAt)), "P")}
             </div>
           </div>
 
-          <div className="row mb-4 ">
-            <div className="h5 mb-2">Sobre Respostas</div>
-
-            <div className="col-2 text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Resposta 1: <br />
-                Correta
-              </div>
-            </div>
-
-            <div className="col text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo
-                omnis corporis fugiat optio rerum quasi magni, labore tempore
-                incidunt saepe deleniti doloremque. Quae, sit ab.
-              </div>
+          <div className="col text-start">
+            <div className="mb-3 fw-medium p-2">
+              Categoria: {showCategoryName(selectedMission?.category?.name)}
             </div>
           </div>
+        </div>
 
-          <div className="row mb-4 ">
-            <div className="col-2 text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Resposta 2: <br />
-                Errada
-              </div>
+        {selectedMission?.question?.map((question, idxQuestion) => (
+          <div className="row mb-4 border-bottom" key={question.id}>
+            <div className="h5 mb-2">Pergunta {idxQuestion + 1}</div>
+
+            <div className="px-4 mb-2 fw-medium">
+              {question.title}
             </div>
 
-            <div className="col text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo
-                omnis corporis fugiat optio rerum quasi magni, labore tempore
-                incidunt saepe deleniti doloremque. Quae, sit ab.
-              </div>
+            <div className="row mb-2">
+              {question?.answer?.map((answer) => (
+                <div className="px-5 mb-2 d-flex align-items-center gap-2" key={answer.id}>
+                  {answer.isCorrect
+                    ? <FaCheck />
+                    : <FaTimes />}
+                  {answer.value}
+                </div>
+              ))}
             </div>
           </div>
-        </form>
+        ))}
       </Modal>
     </>
   );
