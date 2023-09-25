@@ -4,9 +4,11 @@ import { AiOutlineArrowLeft } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import { MdPlaylistAdd } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useGlobal } from "../../contexts/Global";
+import { api } from "../../services/api";
+import { queryClient } from "../../services/queryClient";
 import { showCategoryName } from "../../util";
 
 import "./style.css";
@@ -30,6 +32,8 @@ const INITIAL_ANSWERS = {
 
 export function CriacaoMissao() {
   const [register, setRegister] = useState(INITIAL_REGISTER);
+
+  const navigate = useNavigate();
 
   const { handleLoader, handleMessage, categories } = useGlobal();
 
@@ -75,6 +79,58 @@ export function CriacaoMissao() {
     }));
   }
 
+  async function handleRegister(event) {
+    event.preventDefault();
+
+    handleLoader(true);
+
+    let data = {
+      name: register.name,
+      startsAt: register.startsAt,
+      categoryId: register.categoryId,
+    };
+
+    try {
+      const quizResponse = await api.post('/quizzes', data);
+
+      let questions = [], answers = [];
+
+      for (const item of register.questions) {
+        questions.push({
+          quizId: quizResponse.data.id,
+          title: item.title,
+          answers: item.answers
+        });
+      }
+
+      const questionResponse = await Promise.all(questions.map(q => api.post('/questions', q)));
+
+      for (const [i, item] of questions.entries()) {
+        let data = item.answers.map(a => ({
+          ...a,
+          questionId: questionResponse[i].data.id
+        }));
+
+        answers.push(data);
+      }
+
+      await Promise.all(answers.map(a => api.post('/answers', a)));
+
+      handleMessage("Missão cadastrada com sucesso", "success");
+
+      await queryClient.refetchQueries('missionWithoutCertificate');
+
+      await queryClient.getQueryCache().findAll("missions")[0].fetch();
+
+      setRegister(INITIAL_REGISTER);
+      navigate('/missao');
+    } catch (error) {
+      handleMessage("Erro ao criar missão", "error");
+    } finally {
+      handleLoader(false);
+    }
+  }
+
   return (
     <>
       <div className="d-flex align-items-center bg-body-tertiary shadow m-0 p-3">
@@ -93,7 +149,7 @@ export function CriacaoMissao() {
       <div className="d-flex flex-column gap-2">
         <div className="m-0">
           <div className="bg-body-tertiary p-3">
-            <form>
+            <form onSubmit={handleRegister}>
               <div className="h5 mb-2">Formulário para criação de missão</div>
 
               <div className="row">
@@ -196,6 +252,15 @@ export function CriacaoMissao() {
                             <div className="form-check">
                               <input className="form-check-input" type="radio" id={`radio-${idxQuestion}-${idxAnswer}`}
                                 name={`correct-answer-${idxQuestion}`}
+                                checked={answer.isCorrect}
+                                onChange={() => {
+                                  question.answers.map((item, i) => {
+                                    item.isCorrect = idxAnswer === i;
+                                    return item;
+                                  });
+
+                                  setRegister({ ...register });
+                                }}
                               />
                               <label className="form-check-label" htmlFor={`radio-${idxQuestion}-${idxAnswer}`}>
                                 Resposta correta
@@ -242,7 +307,8 @@ export function CriacaoMissao() {
                 <div className="col">
                   <button
                     className="btn btn-primary"
-                    disabled={register.questions.length < 5}
+                    disabled={register.questions.length < 5 || register.questions.length === 20}
+                    type="submit"
                   >
                     Criar missão
                   </button>
