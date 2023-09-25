@@ -9,12 +9,6 @@ import "./style.css";
 export function MenuSuperior() {
   const { handleLoader, user } = useGlobal();
 
-  function logout() {
-    handleLoader(true);
-
-    signout();
-  }
-
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary shadow head">
       <div className="container-fluid justify-content-between">
@@ -34,7 +28,7 @@ export function MenuSuperior() {
           </Link>
         </div>
 
-        <button className="btn btn-outline-danger" onClick={logout}>
+        <button className="btn btn-outline-danger" onClick={signout}>
           Sair
         </button>
       </div>
