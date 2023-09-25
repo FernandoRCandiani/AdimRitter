@@ -3,18 +3,10 @@ import { PieChart, Pie, Legend, Cell, BarChart, Bar, XAxis, LabelList, YAxis, To
 
 import { Dash } from "../../componentes/Dash";
 
+import { COLORS } from "../../constants";
 import { fetchGeneralRanking, fetchMissionCompanies, fetchTroubleCompanies, fetchUserCertificatesCompany } from '../../services/fetches';
 
 import './style.css';
-
-const COLORS = [
-  "#F47A1F",
-  "#FDBB2F",
-  "#377B2B",
-  "#7AC142",
-  "#007CC3",
-  "#00529B",
-];
 
 export function DashboardCompany() {
   const [avgMissionGeneral, setAvgMissionGeneral] = useState([]);
@@ -110,13 +102,14 @@ export function DashboardCompany() {
           </Dash>
 
           <Dash title="Total de certificados emitidos">
-            <PieChart width={500} height={350}>
+            <PieChart width={700} height={350}>
               <Pie data={userCertificates}
                 nameKey="name"
                 dataKey="qtde"
                 activeIndex={activeIndex}
                 activeShape={renderActiveShape}
                 cy={150}
+                cx={350}
                 innerRadius={50}
                 outerRadius={100}
                 paddingAngle={4}
