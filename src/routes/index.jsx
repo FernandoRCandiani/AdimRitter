@@ -12,6 +12,7 @@ import { Recompensa } from "../pages/Recompensa";
 import { Missao } from "../pages/Missao";
 import { Certificado } from "../pages/Certificado";
 import { Perfil } from "../pages/Perfil";
+import { CriacaoMissao } from "../pages/CriacaoMissao";
 
 import { useGlobal } from "../contexts/Global";
 import { isAuth } from "../services/auth";
@@ -25,6 +26,7 @@ const PageRecompensa = Permission()(Recompensa);
 const PageMissao = Permission()(Missao);
 const PageCertificado = Permission()(Certificado);
 const PagePerfil = Permission()(Perfil);
+const PageCriacaoMissao = Permission()(CriacaoMissao);
 
 export function Rotas() {
   const location = useLocation();
@@ -48,11 +50,7 @@ export function Rotas() {
         <Routes>
           <Route
             path="/"
-            element={
-              isAuth()
-                ? <Navigate to="/dashboard" />
-                : <Login />
-            }
+            element={isAuth() ? <Navigate to="/dashboard" /> : <Login />}
           />
           <Route path="/missao" element={<PageMissao />} />
           <Route
@@ -70,6 +68,7 @@ export function Rotas() {
           <Route path="/recompensa" element={<PageRecompensa />} />
           <Route path="/certificado" element={<PageCertificado />} />
           <Route path="/perfil" element={<PagePerfil />} />
+          <Route path="/criacaoMissao" element={<PageCriacaoMissao />} />
         </Routes>
       </section>
     </main>

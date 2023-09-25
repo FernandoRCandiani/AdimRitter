@@ -6,3 +6,11 @@ export const ROLE = {
   EMPLOYEES: 'EMPLOYEES',
 };
 export const INITIAL_STALE_TIME = 1000 * 60 * 60; // 1h
+export const COLORS = [
+  "#F47A1F",
+  "#FDBB2F",
+  "#377B2B",
+  "#7AC142",
+  "#007CC3",
+  "#00529B",
+];

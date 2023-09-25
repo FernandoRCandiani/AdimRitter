@@ -1,32 +1,35 @@
-import { addDays, format, startOfToday } from 'date-fns';
+import { format, parseISO } from "date-fns";
 import { useState } from "react";
-import { FaTimes } from "react-icons/fa";
-import { MdPlaylistAdd } from "react-icons/md";
-import { useQuery } from 'react-query';
+import { FaCheck, FaTimes } from "react-icons/fa";
+import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
 
 import { Modal } from "../../componentes/Modal";
 import { Paginacao } from "../../componentes/Paginacao";
 import { TabelaMissao } from "../../componentes/TabelaMissao";
 
+import { api } from "../../services/api";
 import { fetchMissions } from "../../services/fetches";
+import { showCategoryName } from "../../util";
 
 import "./style.css";
 
+import "bootstrap/js/dist/collapse";
+
 const INITIAL_FILTER = {
   page: 0,
-  name: ""
+  name: "",
 };
-
 
 export function Missao() {
   const [filterMission, setFilterMission] = useState(INITIAL_FILTER);
   const [search, setSearch] = useState("");
-  const [register, setRegister] = useState({});
-  const [isOpenModalRegister, setIsOpenModalRegister] = useState(false);
+  const [isOpenModalInfo, setIsOpenModalInfo] = useState(false);
+  const [selectedMission, setSelectedMission] = useState();
 
-  const missions = useQuery(["missions", filterMission], () => fetchMissions(filterMission)).data;
-
-  const today = startOfToday();
+  const missions = useQuery(["missions", filterMission], () =>
+    fetchMissions(filterMission)
+  ).data;
 
   function cleanFilter() {
     setFilterMission(INITIAL_FILTER);
@@ -34,7 +37,7 @@ export function Missao() {
   }
 
   function onSearch(event) {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       setFilterMission((parameter) => ({
         ...parameter,
         name: search,
@@ -42,11 +45,10 @@ export function Missao() {
     }
   }
 
-  function onChange(event) {
-    setRegister((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }));
+  async function getInfoMission(id) {
+    const response = await api.get(`/quizzes/${id}`);
+    setSelectedMission(response.data);
+    setIsOpenModalInfo(true);
   }
 
   return (
@@ -56,14 +58,19 @@ export function Missao() {
           <div className="col-3 h4">Lista das Missões cadastadas</div>
 
           <div className="col-3 d-flex justify-content-end">
-            <button
-              type="button"
-              className="d-flex btn btn-primary align-items-center"
-              onClick={() => setIsOpenModalRegister(true)}
+            <Link
+              to="/criacaoMissao"
+              className={[
+                "d-flex",
+                "btn",
+                "btn-primary",
+                "align-items-center",
+                "/criacaoMissao",
+              ].join(" ")}
             >
               <img src="./plus-circle.svg" alt="" className="pe-2" />
               Cadastrar Missões
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -114,7 +121,11 @@ export function Missao() {
                     </tr>
 
                     {missions?.data?.map((mission) => (
-                      <TabelaMissao key={mission.id} {...mission} />
+                      <TabelaMissao
+                        key={mission.id}
+                        info={() => getInfoMission(mission.id)}
+                        {...mission}
+                      />
                     ))}
                   </tbody>
                 </table>
@@ -122,247 +133,67 @@ export function Missao() {
             </div>
 
             <div className="row align-items-center justify-content-between">
-              <div className="col-3">50 missões cadastradas</div>
+              <div className="col-3">
+                {missions?.totalItems} missões cadastradas
+              </div>
               <div className="col-3 d-flex justify-content-end">
-                <Paginacao />
+                <Paginacao
+                  current={filterMission?.page}
+                  totalPages={missions?.totalPages}
+                  setCurrent={(page) =>
+                    setFilterMission((prev) => ({ ...prev, page }))
+                  }
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* MODAL DE CADASTRO */}
-      <Modal isOpen={isOpenModalRegister} onRequestClose={() => setIsOpenModalRegister(false)} title={"Missões"}>
-        {/* CRIAR MISSÃO */}
-        <form>
-          <div className="h5 mb-2">Formulário para criação de missão</div>
-
-          <div className="row">
-            <div className="col mb-3">
-              <input
-                type="text"
-                className="form-control"
-                id="nome"
-                aria-describedby="nomeHelp"
-                placeholder="Nome da missão"
-                name="name"
-                value={register.name}
-                onChange={onChange}
-              />
-            </div>
-
-            <div className="col mb-3">
-              <input
-                type="date"
-                className="form-control"
-                id="data"
-                aria-describedby="datalHelp"
-                placeholder="Data da missão"
-                min={format(addDays(today, 2), "yyyy'-'MM'-'dd")}
-                max="9999-12-31"
-                name="startsAt"
-                value={register.startsAt}
-                onChange={onChange}
-              />
-            </div>
-
-            <div className="col">
-              <select
-                className="form-select"
-                aria-label="Default select example"
-                name="categoryId"
-                value={register.categoryId}
-                onChange={onChange}
-              >
-                <option value="" disabled>Categoria</option>
-                <option value="1">Aeropaortuária</option>
-                <option value="2">Incêndio</option>
-                <option value="3">Coleta residual</option>
-              </select>
-            </div>
-          </div>
-
-          {/* CRIAR PERGUNTA */}
-          <div className="h5 mb-2">Formulário para criação de pergunta</div>
-
-          <div className="row">
-            <div className="col mb-3">
-              <textarea
-                type="text"
-                className="form-control"
-                id="pergunta"
-                aria-describedby="nomeHelp"
-                placeholder="Pergunta"
-              />
-            </div>
-
-            <div className="col mb-3">
-              <textarea
-                type="text"
-                className="form-control"
-                id="descricao"
-                aria-describedby="datalHelp"
-                placeholder="Descricao"
-              />
-            </div>
-          </div>
-
-          {/* CRIAR RESPOSTAS */}
-          <div className="h5 mb-2">Formulário para criação de respostas</div>
-
-          <div className="row grid g-3 mb-2">
-            <div className="col-2 me-3 mb-3 border-bottom border-light-subtle fw-medium p-2">
-              Selecione correta
-            </div>
-
-            <div className="col me-3 mb-3 border-bottom border-light-subtle fw-medium p-2">
-              Adicionar as resposta em ordem aleatória
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-2 mb-3 d-flex justify-content-center">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="radioNoLabel"
-                id="respostaCorreta1"
-              />
-            </div>
-
-            <div className="col mb-3">
-              <textarea
-                type="text"
-                className="form-control"
-                for="respostaCorreta1"
-                id="resposta"
-                aria-describedby="nomeHelp"
-                placeholder="Resposta"
-              />
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-2 mb-3 d-flex justify-content-center">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="radioNoLabel"
-                id="respostaCorreta2"
-              />
-            </div>
-
-            <div className="col mb-3">
-              <textarea
-                type="text"
-                className="form-control"
-                for="respostaCorreta2"
-                id="resposta"
-                aria-describedby="nomeHelp"
-                placeholder="Resposta"
-              />
-            </div>
-          </div>
-
-          <div className="row justify-content-end">
-            <div className="col-2 mb-3">
-              <button type="submit" className="btn btn-primary w-100">
-                <MdPlaylistAdd /> Respostas
-              </button>
-            </div>
-          </div>
-
-          <div className="col-2 mb-3">
-            <button type="submit" className="btn btn-primary w-100">
-              Criar
-            </button>
-          </div>
-        </form>
-      </Modal>
-
       {/* MODAL DE INFORMAÇÃO */}
-      <Modal isOpen={false} onRequestClose={() => { }} title={"Missão"}>
-        <form>
-          <div className="row mb-4 ">
-            <div className="h5 mb-2">Sobre missão</div>
+      <Modal isOpen={isOpenModalInfo} onRequestClose={() => setIsOpenModalInfo(false)} title={"Missão"}>
+        <div className="row mb-4 border-bottom">
+          <div className="h5 mb-2">Sobre missão</div>
 
-            <div className="col text-start">
-              <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-                Nome: Fogo
-              </div>
-            </div>
-
-            <div className="col text-start">
-              <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-                Data: 16/09/2023
-              </div>
-            </div>
-
-            <div className="col text-start">
-              <div className="mb-3 border-bottom border-light-subtle fw-medium p-2">
-                Categoria: Incêndio
-              </div>
+          <div className="col text-start">
+            <div className="mb-3 fw-medium p-2">
+              Nome: {selectedMission?.name}
             </div>
           </div>
 
-          <div className="row mb-4 ">
-            <div className="h5 mb-2">Sobre Pergunta</div>
-
-            <div className="col text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Pergunta: <br />
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugiat
-                earum nemo aperiam nam amet aliquam aspernatur error doloribus
-                repudiandae sunt?
-              </div>
-            </div>
-
-            <div className="col text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Descrição: <br /> Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Illo omnis corporis fugiat optio rerum quasi
-                magni, labore tempore incidunt saepe deleniti doloremque. Quae,
-                sit ab.
-              </div>
+          <div className="col text-start">
+            <div className="mb-3 fw-medium p-2">
+              Data: {selectedMission?.startsAt && format(parseISO(String(selectedMission?.startsAt)), "P")}
             </div>
           </div>
 
-          <div className="row mb-4 ">
-            <div className="h5 mb-2">Sobre Respostas</div>
-
-            <div className="col-2 text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Resposta 1: <br />
-                Correta
-              </div>
-            </div>
-
-            <div className="col text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo
-                omnis corporis fugiat optio rerum quasi magni, labore tempore
-                incidunt saepe deleniti doloremque. Quae, sit ab.
-              </div>
+          <div className="col text-start">
+            <div className="mb-3 fw-medium p-2">
+              Categoria: {showCategoryName(selectedMission?.category?.name)}
             </div>
           </div>
+        </div>
 
-          <div className="row mb-4 ">
-            <div className="col-2 text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Resposta 2: <br />
-                Errada
-              </div>
+        {selectedMission?.question?.map((question, idxQuestion) => (
+          <div className="row mb-4 border-bottom" key={question.id}>
+            <div className="h5 mb-2">Pergunta {idxQuestion + 1}</div>
+
+            <div className="px-4 mb-2 fw-medium">
+              {question.title}
             </div>
 
-            <div className="col text-start">
-              <div className="mb-3 h-100 border-bottom border-light-subtle fw-medium p-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo
-                omnis corporis fugiat optio rerum quasi magni, labore tempore
-                incidunt saepe deleniti doloremque. Quae, sit ab.
-              </div>
+            <div className="row mb-2">
+              {question?.answer?.map((answer) => (
+                <div className="px-5 mb-2 d-flex align-items-center gap-2" key={answer.id}>
+                  {answer.isCorrect
+                    ? <FaCheck />
+                    : <FaTimes />}
+                  {answer.value}
+                </div>
+              ))}
             </div>
           </div>
-        </form>
+        ))}
       </Modal>
     </>
   );
