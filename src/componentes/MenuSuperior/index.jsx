@@ -7,7 +7,7 @@ import { signout } from "../../services/auth";
 import "./style.css";
 
 export function MenuSuperior() {
-  const { handleLoader, user } = useGlobal();
+  const { user } = useGlobal();
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary shadow head">
@@ -17,13 +17,13 @@ export function MenuSuperior() {
         <div className="d-flex navbar-brand align-items-center">
           <img
             src={user?.image ?? "/icon.png"}
-            alt={user.name}
+            alt={user?.name}
             width="70"
             height="70"
             className="d-inline-block align-text-top rounded-circle me-3 profile-image"
           />
           <Link to="/perfil" className={["link-perfil"].join("")}>
-            Olá, {user.name ?? "Ritter Humboldt"}
+            Olá, {user?.name ?? "Ritter Humboldt"}
             <FaUserEdit className="icon-edit-perfil" />
           </Link>
         </div>
