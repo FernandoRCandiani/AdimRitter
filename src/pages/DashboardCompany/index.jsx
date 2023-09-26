@@ -140,7 +140,7 @@ export function DashboardCompany() {
               <Legend />
               <CartesianGrid strokeDasharray="3 3" stroke="#aaa" />
               <XAxis dataKey="name" fontSize={12} interval={0} stroke="#222" />
-              <YAxis fontSize={13} allowDataOverflow allowDecimals />
+              <YAxis fontSize={13} allowDataOverflow allowDecimals domain={['auto', 'dataMax']} />
               <Tooltip position={{ y: 0 }} />
               <Bar barSize={40} name="Quantidade" dataKey="qtde" isAnimationActive={false} fill="#6251A3">
                 <LabelList position="inside" offset={30} angle={90} fill="#fff" fontSize={13} />
