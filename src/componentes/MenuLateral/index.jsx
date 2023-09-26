@@ -22,7 +22,7 @@ export function MenuLateral() {
             Usuários
           </Link>
 
-          {user.role === 'ADMIN' && (
+          {user?.role === 'ADMIN' && (
             <>
               <Link to="/empresa" className={["btn-outline-focus", "p-2", location.pathname === '/empresa' ? 'active' : ''].join(" ")}>
                 Empresas
