@@ -6,16 +6,22 @@ import { queryClient } from '../../services/queryClient';
 import { showRarity, showTypePrize } from "../../util";
 
 export function TabelaRecompensa(props) {
-  const { handleLoader } = useGlobal();
+  const { handleLoader, handleMessage } = useGlobal();
 
   async function toggleActive(id) {
     handleLoader(true);
 
-    await api.get(`/prizes/active/${id}`);
+    try {
+      await api.get(`/prizes/active/${id}`);
 
-    await queryClient.getQueryCache().findAll("prizes")[0].fetch();
+      await queryClient.getQueryCache().findAll("prizes")[0].fetch();
 
-    handleLoader(false);
+    } catch (error) {
+      const data = error?.response?.data;
+      handleMessage(data?.message ?? "Erro ao atualizar status da recompensa", "error");
+    } finally {
+      handleLoader(false);
+    }
   }
 
   return (
