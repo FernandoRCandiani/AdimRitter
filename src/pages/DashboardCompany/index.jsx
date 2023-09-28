@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PieChart, Pie, Legend, Cell, BarChart, Bar, XAxis, LabelList, YAxis, Tooltip, CartesianGrid, Sector } from "recharts";
+import { PieChart, Pie, Legend, Cell, BarChart, Bar, XAxis, LabelList, YAxis, Tooltip, CartesianGrid, Sector, Text } from "recharts";
 
 import { Dash } from "../../componentes/Dash";
 
